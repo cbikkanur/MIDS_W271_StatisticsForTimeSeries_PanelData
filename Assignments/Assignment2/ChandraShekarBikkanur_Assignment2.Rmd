@@ -1,0 +1,361 @@
+---
+title: "W271 - Assignment2"
+author: "Chandra Shekar Bikkanur"
+date: "10/9/2019"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+ 
+```{r message=FALSE}
+#Loading some libraries for this assignment
+library(car)
+library(dplyr)
+library(Hmisc)
+library(ggplot2)
+library(mcprofile)
+library(nnet)
+library(MASS)
+library(GGally)
+library("ggpubr")
+```
+
+# 1. Strategic Placement of Products in Grocery Stores 
+
+Let us load the data into a data frame and do the initial EDA. 
+
+```{r}
+cereal <- read.csv("cereal_dillons.csv", header=TRUE, sep=",")
+head(cereal, 5)
+str(cereal)
+summary(cereal)
+```
+We see that *Shelf* is of integer type. This should be changed to a *factor* data type to do any regressions on the data.
+
+**1.1 (1 point):** The explanatory variables need to be reformatted before proceeding further (sample code is provided in the textbook). First, divide each explanatory variable by its serving size to account for the different serving sizes among the cereals. Second, rescale each variable to be within 0 and 1. Construct side-by-side box plots with dot plots overlaid for each of the explanatory variables. Also, construct a parallel coordinates plot for the explanatory variables and the shelf number. Discuss whether possible content differences exist among the shelves.
+```{r}
+stand01 <- function(x) { (x - min(x))/(max(x) - min(x)) } # function to standardize a dataset
+cereal2 <- data.frame(Shelf = cereal$Shelf, 
+                      sugar = stand01(x = cereal$sugar_g/cereal$size_g),
+                      fat = stand01(x = cereal$fat_g/cereal$size_g), 
+                      sodium = stand01(x = cereal$sodium_mg/cereal$size_g))
+                      # new data frame consisting of Shelf, sugar, fat and sodium
+str(cereal2)
+tail(cereal2, 5)
+
+```
+
+```{r}
+par(mfrow=c(1,3))
+boxplot(formula = sugar ~ Shelf, data = cereal2, 
+        ylab = "Sugar", xlab = "Shelf", pars = list(outpch=NA)) 
+stripchart(x = cereal2$sugar ~cereal2$Shelf, lwd = 1, 
+           col = "red", method = "jitter", vertical = TRUE, pch = 1, add = TRUE)
+boxplot(formula = fat ~ Shelf, data = cereal2, 
+        ylab = "fat", xlab = "Shelf", pars = list(outpch=NA)) 
+stripchart(x = cereal2$fat ~cereal2$Shelf, lwd = 1, 
+           col = "red", method = "jitter", vertical = TRUE, pch = 1, add = TRUE)
+boxplot(formula = sodium ~ Shelf, data = cereal2, 
+        ylab = "sodium", xlab = "Shelf", pars = list(outpch=NA)) 
+stripchart(x = cereal2$sodium ~cereal2$Shelf, lwd = 1,
+           col = "red", method = "jitter", vertical = TRUE, pch = 1, add = TRUE)
+
+```
+```{r}
+ggparcoord(cereal2, columns = 2:4, groupColumn = 'Shelf', scale = 'globalminmax', 
+           showPoints = TRUE, title = "Parallel Coordinate Plot for the cereal2 Data", 
+           alphaLines = 0.6, mapping=aes(color=as.factor(Shelf))) +
+            xlab("Explanatory Variable") + ylab("Standardized Value") +
+           scale_color_discrete("Shelf")
+```
+
+
+From above 2 plots, we can see that the *shelf 2* has cereals with relatively more *sugar*, *fat* and *sodium* contents.
+
+**1.2 (1 point):** The response has values of $1, 2, 3,$ and $4$. Explain under what setting would it be desirable to take into account ordinality, and whether you think that this setting occurs here. Then estimate a suitable multinomial regression model with linear forms of the sugar, fat, and sodium variables. Perform LRTs to examine the importance of each explanatory variable. Show that there are no significant interactions among the explanatory variables (including an interaction among all three variables).
+
+If placing cereals in shelf 4 (top shelf) is more conducive in the likelihood of purchasing cereals from shelf 4 than shelf 1 (bottom), then we can take ordinality into account. Here, we do not have such information about the shelves. So, we can try to fit a nominal response regression model for the *Shelf* with *fat*, *sugar* and *sodium* as explanatory variables.
+
+
+```{r}
+cereal2$Shelf <- as.factor(cereal2$Shelf) # convert int data_type of Shelf to factor
+mod.fit.nom <- multinom(Shelf~sugar + fat + sodium, data = cereal2)
+summary(mod.fit.nom)
+Anova(mod.fit.nom) # performing LR Test
+```
+
+
+From above LR test for the *mod.fit.nom* model, we can see that *sugar* and *sodium* have significance in determining the *Shelf* the cereals could be placed in. Let us now check if these explanatory variables have any interactions among them 
+```{r}
+mod.fit.nom2 <- multinom(Shelf~sugar + fat + sodium + sugar*fat + 
+                           sugar*sodium + fat*sodium + sugar*fat*sodium, 
+                         data = cereal2)
+summary(mod.fit.nom2)
+Anova(mod.fit.nom2) # performing LR Test
+```
+
+
+From above LR test for *mod.fit.nom2* model, we can see that there are no explanatory variables' interactions in determining the *Shelf*.
+
+
+**1.3 (1 point):** Kellogg’s Apple Jacks (http://www.applejacks.com) is a cereal marketed toward children. For a serving size of $28$ grams, its sugar content is $12$ grams, fat content is $0.5$ grams, and sodium content is $130$ milligrams. Estimate the shelf probabilities for Apple Jacks.
+
+```{r}
+stand01_2 <- function(x, min , max) { (x - min)/(max - min) } # function to standardize a dataset
+Kellogs_data <- data.frame(sugar = stand01_2(x = 12/28, min = min(cereal$sugar_g/cereal$size_g),
+                           max  =    max(cereal$sugar_g/cereal$size_g)), 
+                           fat = stand01_2(x = 0.5/28, min = min(cereal$fat_g/cereal$size_g), 
+                           max =  max(cereal$fat_g/cereal$size_g)), 
+                           sodium = stand01_2(x = 130/28, min = min(cereal$sodium_mg/cereal$size_g), 
+                           max =  max(cereal$sodium_mg/cereal$size_g)))
+str(Kellogs_data)
+pi.hat <- predict(object = mod.fit.nom, newdata = Kellogs_data, type = "probs") 
+pi.hat
+```
+
+
+**1.4 (1 point):** Construct a plot similar to Figure 3.3 where the estimated probability for a shelf is on the *y-axis* and the sugar content is on the *x-axis*. Use the mean overall fat and sodium content as the corresponding variable values in the model. Interpret the plot with respect to sugar content.
+
+```{r}
+sugar <- seq(0,1, 0.01)
+mean_fat <- mean(cereal2$fat)
+mean_sodium <- mean(cereal2$sodium)
+new_data = data.frame(sugar=sugar, fat=mean_fat,sodium=mean_sodium)
+head(new_data)
+pi.hat <- predict(object = mod.fit.nom, newdata = new_data, type = "probs")
+pi.hat_df <- as.data.frame(pi.hat)
+pi.hat_df$sugar <- sugar
+names(pi.hat_df) <- c("Shelf_1", "Shelf_2", "Shelf_3", "Shelf_4", "Sugar")
+head(pi.hat_df)
+
+```
+
+
+```{r}
+plot(pi.hat_df$Sugar,pi.hat_df$Shelf_1,type="l",col="blue", 
+     main="Estimated probability for a shelf given sugar",
+     ylab="pi.hat", xlab = "sugar", ylim = c(0,1))
+lines(pi.hat_df$Sugar,pi.hat_df$Shelf_2, col="red")
+lines(pi.hat_df$Sugar,pi.hat_df$Shelf_3, col="green")
+lines(pi.hat_df$Sugar,pi.hat_df$Shelf_4, col="black")
+legend("topleft",
+c("Shelf_1","Shelf_2","Shelf_3","Shelf_4"),
+fill=c("blue","red","green","black")
+)
+```
+
+```{r}
+g <- ggplot(pi.hat_df, aes(Sugar))
+g <- g + geom_line(aes(y=Shelf_1), colour="blue")
+g <- g + geom_line(aes(y=Shelf_2), colour="red")
+g <- g + geom_line(aes(y=Shelf_3), colour="green")
+g <- g + geom_line(aes(y=Shelf_4), colour="black")
+g <- g + ylab("pi.hat") + xlab("sugar")
+g
+```
+
+
+**1.5 (1 point):** Estimate odds ratios and calculate corresponding confidence intervals for each explanatory variable. Relate your interpretations back to the plots constructed for this exercise. 
+
+
+
+```{r}
+c.value <- apply(X = cereal2[c(2:4)], MARGIN = 2, FUN = sd)
+beta.hat2 <- coefficients(mod.fit.nom)[1, 2:4]
+beta.hat3 <- coefficients(mod.fit.nom)[2, 2:4]
+beta.hat4 <- coefficients(mod.fit.nom)[3, 2:4]
+```
+
+```{r}
+print("-- Odds Ratio (Shelf2 vs. Shelf1) for increase in explanatory variables by one sd --")
+round(exp(c.value*beta.hat2), 2)
+print("--Odds Ratio (Shelf2 vs. Shelf1) for decrease in explanatory variables by one sd --")
+round(1/exp(c.value*beta.hat2), 2)
+```
+```{r}
+print("--Odds Ratio (Shelf3 vs. Shelf1) for increase in explanatory variables by one sd --")
+round(exp(c.value*beta.hat3), 2)
+print("--Odds Ratio (Shelf3 vs. Shelf1) for decrease in explanatory variables by one sd --")
+round(1/exp(c.value*beta.hat3), 2)
+```
+```{r}
+print("--Odds Ratio (Shelf4 vs. Shelf1) for increase in explanatory variables by one sd --")
+round(exp(c.value*beta.hat4), 2)
+print("--Odds Ratio (Shelf4 vs. Shelf1) for decrease in explanatory variables by one sd --")
+round(1/exp(c.value*beta.hat4), 2)
+```
+
+#### Effect of sugar:
+From above Odds Ratios for shelf_2, shelf_3, shelf_4 against shelf_1 for one standard deviation change in sugar, we can see that, as the sugar of the cereal increases, it is more likely (2.06 times) to be in Shelf_2; the same is already proven from boxplot. Also,if the sugar decreases, the cereal could end up in shelf_3 (26.81 times likely) or shelf_4 (21.48 times likely); we can inspect the initial boxplot for the same.
+
+#### Effect of fat:
+From above Odds Ratios for shelf_2, shelf_3, shelf_4 against shelf_1 for one standard deviation change in fat, we can see that, as the fat of the cereal increases, it is more likely (3.37 times) to be in Shelf_2; the same is already proven from boxplot. Also,if the fat decreases, the cereal could end up in shelf_3 (1.18 times likely) or shelf_4 (1.30); we can inspect the initial boxplot for the same.
+
+#### Effect of sodium:
+From above Odds Ratios for shelf_2, shelf_3, shelf_4 against shelf_1 for one standard deviation change in sodium, we can see that, as the sugar of the cereal increases, it is more likely to be in Shelf_1; as high sodium cereals are in shelf_1 which is already proven from boxplot. Also,if the sodium decreases, the cereal could end up in shelf_3 (311.36 times likely) or shelf_4 (290.31 times likely); we can inspect the initial boxplot for the same.
+
+
+
+\newpage
+# 2. Alcohol, self-esteem and negative relationship interactions 
+
+Read the example **'Alcohol Consumption'** in chapter 4.2.2 of the textbook. This is based on a study in which moderate-to-heavy drinkers (defined as at least 12 alcoholic drinks/week for women, 15 for men) were recruited to keep a daily record of each drink that they consumed over a 30-day study period. Participants also completed a variety of rating scales covering daily events in their lives and items related to self-esteem. The data are given in the *DeHartSimplified.csv *data set. Questions 24-26 of chapter 3 of the textbook also relate to this data set and give more explanation of its variables.  
+
+The researchers stated the following hypothesis:
+
+*We hypothesized that negative interactions with romantic partners would be associated with alcohol consumption (and an increased desire to drink). We predicted that people with low trait self-esteem would drink more on days they experienced more negative relationship interactions compared with days during which they experienced fewer negative relationship interactions. The relation between drinking and negative relationship interactions should not be evident for individuals with high trait self-esteem.*
+
+**2.1 (2 points):** Conduct a thorough EDA of the data set, giving special attention to the relationships relevant to the researchers' hypotheses. You will use this to guide the model specification in the following questions. 
+
+
+```{r}
+dehart <- read.csv("DeHartSimplified.csv", header=TRUE, sep=",", na.strings = " ") # Load the data
+head(dehart, 5)
+str(dehart)
+summary(dehart)
+```
+
+From above **structure** and **summary** of **dehart** dataframe, we can see that total number of alcohol consumed(**numall**)ranges from o to 21. Also, Negative Relationship Interactions range from 0 to 9 and of **num** data type. 
+
+#### Univariate Analysis: 
+Let us now plot some distribution plots for explanatory variables of interest.
+
+```{r warning=FALSE}
+theme_set(theme_gray())
+dist_drinks <- ggplot(dehart, aes(numall)) + geom_bar(fill="royalblue") + 
+                         ggtitle("Distribution of Number of Alcohol Drinks") +
+                         xlab("Number of Alcohol Drinks") + ylab("Count")+  
+                         theme(plot.title = element_text(lineheight=1, size = 10, face = "bold"))
+
+dist_nrel <- ggplot(dehart, aes(nrel)) + geom_histogram(binwidth = 0.5, fill="royalblue") + 
+                        ggtitle("Distribution of Neg Relationship Interactions") +
+                        xlab("Negative Relationship Interactions") +  ylab("Count") +
+                        theme(plot.title = element_text(lineheight=1, size = 10, face = "bold"))
+
+dist_desired <- ggplot(dehart, aes(desired)) + geom_histogram(binwidth = 0.1, fill="royalblue") + 
+                        ggtitle("Distribution of Desiredness") +
+                        xlab("Desiredness") +  ylab("Count") +
+                       theme(plot.title = element_text(lineheight=1, size = 10, face = "bold"))
+
+dist_rosn <- ggplot(dehart, aes(rosn)) + geom_histogram(binwidth = 0.05, fill="royalblue") + 
+                        ggtitle("Distribution of self-esteem") +
+                        xlab("Self-esteem") +  ylab("Count") +
+                       theme(plot.title = element_text(lineheight=1, size = 10, face = "bold"))
+
+
+ggarrange(dist_drinks, dist_nrel, dist_desired, dist_rosn, ncol = 2, nrow = 2) 
+                                         
+```
+
+We can see from above histogram/distribution plot, total number of alcohol drinks consumed (**numall**) has median around 2 drinks. Also, desiredness and self-esteem are slightly right-skewed.
+
+#### Bivariate Analysis: 
+
+Let us now see the effects of Negative Relationship Interactions(**nrel**)on total number of drinks consumed (**numall**) and desiredness to drink alcohol(**desired**)
+
+```{r warning=FALSE}
+theme_set(theme_gray())
+lm_nrel_numall <- ggplot(dehart, aes(x = nrel, y=numall)) + geom_point(position = "jitter") + 
+                  geom_smooth(method = 'lm') + 
+                  ggtitle('Neg Rel Int vs. Number of Drinks') + 
+                  xlab("Negative Relationship Interactions") + ylab("Number of Drinks") +
+                 theme(plot.title = element_text(lineheight=1, size = 10, face = "bold"))
+
+lm_desired_numall <- ggplot(dehart, aes(x = nrel, y=desired)) + geom_point(position = "jitter") + 
+                  geom_smooth(method = 'lm') + 
+                  ggtitle('Neg Rel Int vs. Desiredness to Drinks') + 
+                  xlab("Negative Relationship Interactions") + ylab("Desiredness to Drinks") +
+                 theme(plot.title = element_text(lineheight=1, size = 10, face = "bold"))
+ggarrange(lm_nrel_numall, lm_desired_numall, ncol = 2, nrow = 1) 
+```
+
+We can see from above 2 plots that the total number of drinks consumed (**numall**) and desiredness to drink alcohol(**desired**) increase with Negative Relationship Interactions(**nrel**) encountered on that day.
+
+
+```{r warning=FALSE}
+ggplot(dehart, aes(x = nrel, y=numall)) + geom_point(aes(size=rosn), color="royalblue") + 
+                  geom_smooth(method = 'lm') + 
+                  ggtitle('Neg Rel Int vs. Number of Drinks by Self-esteem') + 
+                  xlab("Negative Relationship Interactions") + ylab("Number of Drinks") +
+                 theme(plot.title = element_text(lineheight=1, size = 14, face = "bold"))
+
+```
+
+From above plot, we can see that, relatively high self-esteem people had less alcohol consumption and less negative relationship interactions.  
+
+
+**2.2 (2 points):** Using an appropriate model (or models), evaluate the evidence that negative relationship interactions are associated with higher alcohol consumption and/or an increased desire to drink. 
+
+Let us now create a Poisson regression model for mean number of alcohol drinks consumed based on negative relationship interactions and self-esteem.
+
+```{r}
+mod.numall.neg <- glm(numall~nrel +rosn , family = poisson(link="log"), data = dehart)
+summary(mod.numall.neg)
+Anova(mod.numall.neg)
+```
+
+From above Poisson regression model's summary and LRT test, we can see that there is a positive effect of negative relationship interactions on mean number of alcohol drinks consumed. However, there is no significant evidence that self-esteem has any effect on alcohol consumption.
+
+Let us now create a linear regression model for desiredness to drink alcohol based on negative relationship interactions and self-esteem.
+```{r}
+mod.desired.neg <- glm(desired ~nrel + rosn, data = dehart)
+summary(mod.desired.neg)
+Anova(mod.desired.neg)
+```
+
+From above linear model, we can see that both Negative Relationship Interactions(**nrel**) and self-esteem(**rosn**) has significant effect on desiedness to consume alcohol(**desired**). Less self-esteem persons had higher desire to drink alcohol and high-esteem persons had lower desire to drink alcohol(as the coefficient of **rosn** has negative magnitude). Both p-value and Chi-square value suggest that self-esteem(**rosn**) is a significant indicator of desiredness to drink alcohol. 
+
+**2.3 (1 points):** Discuss whether the relationship between drinking and negative relationship interactions differs according to individuals' levels of trait self-esteem.
+
+
+Let us now segregate the data into **lowesteem** and **highesteem** data based on **rosn** values $3rd$ quantile.  
+```{r}
+lowesteem <- dehart[dehart$rosn <= quantile(dehart$rosn)["75%"], c(1:13)]# < 3rd quantile rosn into lowesteem data
+highesteem <- dehart[dehart$rosn > quantile(dehart$rosn)["75%"], c(1:13)]# > 3rd quantile rosn into highesteem data
+```
+
+
+Let us now create a Poisson regression model on mean number of alcohol drinks consumed(**numall**) by **lowesteem** data and see the findings.
+
+```{r}
+mod.numall.neg_lowesteem <- glm(numall~nrel +rosn , family = poisson(link="log"), data = lowesteem)
+summary(mod.numall.neg_lowesteem)
+Anova(mod.numall.neg_lowesteem)
+```
+From above p-value and Chi-square values for **nrel**, we can say that for lowesteem data, number of alcohol consumption(**numall**) are affected by negative relationship interactions(**nrel**). And this is statistically significant.
+
+
+Let us now create a Poisson regression model on mean number of alcohol drinks consumed(**numall**) by **highesteem** data and see the findings.
+
+```{r}
+mod.numall.neg_highesteem <- glm(numall~nrel +rosn , family = poisson(link="log"), data = highesteem)
+summary(mod.numall.neg_highesteem)
+Anova(mod.numall.neg_highesteem)
+```
+It is evident from above p-values and Chi-square values for **nrel**, there is no effect of negative relationship interactions on alcohol consumption(**numall**) for persons with high self-esteem (**highesteem** data). 
+
+```{r warning=FALSE}
+theme_set(theme_gray())
+lm_nrel_numall_lowesteem <- ggplot(lowesteem, aes(x = nrel, y=numall)) + geom_point(position = "jitter") + 
+                  geom_smooth(method = 'lm') + 
+                  ggtitle('Low Self-Esteem: Neg Rel Int vs. # of Drinks') + 
+                  xlab("Negative Relationship Interactions") + ylab("Number of Drinks") +
+                 theme(plot.title = element_text(lineheight=1, size = 10, face = "bold"))
+
+lm_nrel_numall_highesteem <- ggplot(highesteem, aes(x = nrel, y=numall)) + geom_point(position = "jitter") + 
+                  geom_smooth(method = 'lm') + 
+                  ggtitle('High Self-esteem: Neg Rel Int vs. # of Drinks') + 
+                  xlab("Negative Relationship Interactions") + ylab("Numer of Drinks") +
+                 theme(plot.title = element_text(lineheight=1, size = 10, face = "bold"))
+
+ggarrange(lm_nrel_numall_lowesteem, lm_nrel_numall_highesteem, ncol = 2, nrow = 1) 
+```
+
+We can visually see the same evidence in above plots. For people with low self-esteem, the negative relationship interactions lead to more number of alcohol drinks consumed. Whereas for people with high self-esteem, the negative relationship interactions do not increase (rather decreases)the number of alcohol drinks consumed. 
+
