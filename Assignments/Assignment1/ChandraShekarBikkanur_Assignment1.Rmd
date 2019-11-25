@@ -1,0 +1,476 @@
+---
+title: "W271 - Assignment 1"
+author: "Chandra Shekar Bikkanur"
+output:
+  pdf_document: default
+  html_document: default
+---
+ 
+```{r message=FALSE}
+#Loading some libraries for this assignment
+library(car)
+library(dplyr)
+library(Hmisc)
+library(ggplot2)
+library(mcprofile)
+library(nnet)
+library(MASS)
+```
+
+
+**Question 1.1:** Use the code from the week 1 live session file and: (1) redo the exercise for `n=50, n=100, n=500`, (2) plot the graphs, and (3) describe what you have observed from the results. Use the same `pi.seq` as in the live session code.
+
+- **1.1.1:**
+```{r}
+# function to get the wald true coverage 
+wald.CI.true.coverage = function(pi, alpha=0.05, n) {  
+  w = 0:n
+  pi.hat = w/n
+  pmf = dbinom(x=w, size=n, prob=pi)  
+  var.wald = pi.hat*(1-pi.hat)/n
+  wald.CI_lower.bound = pi.hat - qnorm(p = 1-alpha/2)*sqrt(var.wald)
+  wald.CI_upper.bound = pi.hat + qnorm(p = 1-alpha/2)*sqrt(var.wald)  
+  covered.pi = ifelse(test = pi>wald.CI_lower.bound, yes = ifelse(test = pi<wald.CI_upper.bound, yes=1, no=0), no=0)  
+  wald.CI.true.coverage = sum(covered.pi*pmf)  
+  wald.df = data.frame(w, pi.hat, round(data.frame(pmf, wald.CI_lower.bound,wald.CI_upper.bound),4), covered.pi)  
+  return(wald.df)
+}
+
+# function to get the wald true coverage matrix for different pi values
+get.wald.CI.true.matrix = function(pi, alpha=0.05, n) {
+   wald.df = wald.CI.true.coverage(pi=pi, alpha=0.05, n=n)
+   wald.CI.true.coverage.level = sum(wald.df$covered.pi*wald.df$pmf)
+   pi.seq = seq(0.01,0.99, by=0.01)
+   wald.CI.true.matrix = matrix(data=NA,nrow=length(pi.seq),ncol=2)
+   counter=1
+   for (pi in pi.seq) {
+        wald.df2 = wald.CI.true.coverage(pi=pi, alpha=0.05, n=n)
+        wald.CI.true.matrix[counter,] = c(pi,sum(wald.df2$covered.pi*wald.df2$pmf))
+        counter = counter+1
+       }
+   return(wald.CI.true.matrix)
+}
+wald.CI.true.matrix_10   = get.wald.CI.true.matrix(pi = 0.6, alpha=0.05, n=10)
+wald.CI.true.matrix_50   = get.wald.CI.true.matrix(pi = 0.6, alpha=0.05, n=50)
+wald.CI.true.matrix_100  = get.wald.CI.true.matrix(pi = 0.6, alpha=0.05, n=100)
+wald.CI.true.matrix_500  = get.wald.CI.true.matrix(pi = 0.6, alpha=0.05, n=500)
+```
+\vspace{0.25in}
+- **1.1.2:**
+```{r fig.height=15, fig.width=5}
+# Plot the true coverage level (for given n and alpha)
+alpha=0.05
+par(mfrow=c(4,1))
+# n=10
+plot(x=wald.CI.true.matrix_10[,1],
+     y=wald.CI.true.matrix_10[,2],
+     ylim=c(0,1),
+     main = "Wald C.I. True Confidence Level Coverage for n = 10", xlab=expression(pi),
+     ylab="True Confidence Level",
+     type="l")
+abline(h=1-alpha, lty="dotted")
+# n=50
+plot(x=wald.CI.true.matrix_50[,1],
+     y=wald.CI.true.matrix_50[,2],
+     ylim=c(0,1),
+     main = "Wald C.I. True Confidence Level Coverage for n = 50", xlab=expression(pi),
+     ylab="True Confidence Level",
+     type="l")
+abline(h=1-alpha, lty="dotted")
+# n=100
+plot(x=wald.CI.true.matrix_100[,1],
+     y=wald.CI.true.matrix_100[,2],
+     ylim=c(0,1),
+     main = "Wald C.I. True Confidence Level Coverage for n = 100", xlab=expression(pi),
+     ylab="True Confidence Level",
+     type="l")
+abline(h=1-alpha, lty="dotted")
+# n=500
+plot(x=wald.CI.true.matrix_500[,1],
+     y=wald.CI.true.matrix_500[,2],
+     ylim=c(0,1),
+     main = "Wald C.I. True Confidence Level Coverage for n = 500", xlab=expression(pi),
+     ylab="True Confidence Level",
+     type="l")
+abline(h=1-alpha, lty="dotted")
+
+```
+
+\vspace{0.25in}
+- **1.1.3:** From above 4 plots, we can see that the confidence level coverage is increasing(less fluctuating) as the number of samples increases from 10, 50, 100 to 500. 
+
+\vspace{0.45in}
+**Question 1.2:** (1) Modify the code for the Wilson Interval. (2) Do the exercise for `n=10, n=50, n=100, n=500`. (3) Plot the graphs. (4) Describe what you have observed from the results and compare the Wald and Wilson intervals based on your results. Use the same `pi.seq` as in the live session code.
+
+\vspace{0.25in}
+
+Wilson Confidence Interval for an estimated parameter $\tilde{\pi}$ is as follows
+
+$$ 
+\tilde{\pi} \pm \frac{Z_{1-\frac{\alpha}{2}} n^{1/2}}{n + Z^2_{1-\frac{\alpha}{2}}} \sqrt{\hat{\pi}(1-\hat{\pi}) + \frac{Z^2_{1-\frac{\alpha}{2}}}{4n}}
+$$
+
+where $\tilde{\pi}$ is defined as
+
+$$
+\tilde{\pi} = \frac{w + \frac{1}{2}Z^2_{1-\frac{\alpha}{2}}}{n + Z^2_{1-\frac{\alpha}{2}}}
+$$
+
+
+- **1.2.1:**
+```{r}
+# function to get the wilson true coverage
+wilson.CI.true.coverage = function(pi, alpha=0.05, n) {  
+  w = 0:n
+  Z = qnorm(p = 1-alpha/2)
+  Z2 = Z^2
+  pi.hat = (w+(Z2/2))/(n+Z2)
+  pmf = dbinom(x=w, size=n, prob=pi)
+  delta = (Z*sqrt(n))*sqrt((pi.hat * (1 - pi.hat)) + (Z2)/(4*n))/(n+Z2)
+  wilson.CI_lower.bound = pi.hat - delta
+  wilson.CI_upper.bound = pi.hat + delta  
+  covered.pi = ifelse(test = pi>wilson.CI_lower.bound, yes = ifelse(test = pi<wilson.CI_upper.bound, yes=1, no=0), no=0)  
+  wilson.CI.true.coverage = sum(covered.pi*pmf)  
+  wilson.df = data.frame(w, pi.hat, round(data.frame(pmf, wilson.CI_lower.bound,wilson.CI_upper.bound),4), covered.pi)  
+  return(wilson.df)
+}
+```
+- **1.2.2:**
+```{r}
+# function to get the wilson true coverage matrix for different pi values
+get.wilson.CI.true.matrix = function(pi, alpha=0.05, n) {
+   wilson.df = wilson.CI.true.coverage(pi=pi, alpha=0.05, n=n)
+   wilson.CI.true.coverage.level = sum(wilson.df$covered.pi*wilson.df$pmf)
+   pi.seq = seq(0.01,0.99, by=0.01)
+   wilson.CI.true.matrix = matrix(data=NA,nrow=length(pi.seq),ncol=2)
+   counter=1
+   for (pi in pi.seq) {
+        wilson.df2 = wilson.CI.true.coverage(pi=pi, alpha=0.05, n=n)
+        wilson.CI.true.matrix[counter,] = c(pi,sum(wilson.df2$covered.pi*wilson.df2$pmf))
+        counter = counter+1
+       }
+   return(wilson.CI.true.matrix)
+}
+wilson.CI.true.matrix_10   = get.wilson.CI.true.matrix(pi = 0.6, alpha=0.05, n=10)
+wilson.CI.true.matrix_50   = get.wilson.CI.true.matrix(pi = 0.6, alpha=0.05, n=50)
+wilson.CI.true.matrix_100   = get.wilson.CI.true.matrix(pi = 0.6, alpha=0.05, n=100)
+wilson.CI.true.matrix_500   = get.wilson.CI.true.matrix(pi = 0.6, alpha=0.05, n=500)
+```
+- **1.2.3:**
+```{r fig.height=15, fig.width=5}
+# Plot the true coverage level (for given n and alpha)
+par(mfrow=c(4,1))
+# n=10
+plot(x=wilson.CI.true.matrix_10[,1],
+     y=wilson.CI.true.matrix_10[,2],
+     ylim=c(0,1),
+     main = "Wilson C.I. True Confidence Level Coverage for n = 10", xlab=expression(pi),
+     ylab="True Confidence Level",
+     type="l")
+abline(h=1-alpha, lty="dotted")
+# n=50
+plot(x=wilson.CI.true.matrix_50[,1],
+     y=wilson.CI.true.matrix_50[,2],
+     ylim=c(0,1),
+     main = "Wilson C.I. True Confidence Level Coverage for n = 50", xlab=expression(pi),
+     ylab="True Confidence Level",
+     type="l")
+abline(h=1-alpha, lty="dotted")
+# n=100
+plot(x=wilson.CI.true.matrix_100[,1],
+     y=wilson.CI.true.matrix_100[,2],
+     ylim=c(0,1),
+     main = "Wilson C.I. True Confidence Level Coverage for n = 100", xlab=expression(pi),
+     ylab="True Confidence Level",
+     type="l")
+abline(h=1-alpha, lty="dotted")
+# n=500
+plot(x=wilson.CI.true.matrix_500[,1],
+     y=wilson.CI.true.matrix_500[,2],
+     ylim=c(0,1),
+     main = "Wilson C.I. True Confidence Level Coverage for n = 500", xlab=expression(pi),
+     ylab="True Confidence Level",
+     type="l")
+abline(h=1-alpha, lty="dotted")
+```
+
+\vspace{0.25in}
+- **1.2.4:** From the plots for wald confidence coverage and wilson confidence coverage, we can see that the wilson confidence coverage shows the 95% coverage relatively more accurate for less number of samples than wald coverage. 
+\newpage
+
+
+**Question 2:** Using the `placekick.BW.csv` data, `Distance`, `Weather`, `Wind15`, `Temperature`, `Grass`, `Pressure`, and `Ice` as explanatory variables in a logistic regression model, complete the following:
+
+
+* (a) Estimate the model and properly deﬁne the indicator variables used within it. 
+* (b) The authors use "Sun" as the base level category for Weather, which is not the default level that R uses. Describe how "Sun" can be speciﬁed as the base level in R. 
+* (c) Perform LRTs for all explanatory variables to evaluate their importance within the model. Discuss the results. 
+* (d) Estimate an appropriate odds ratio for distance, and compute the corresponding conﬁdence interval. Interpret the odds ratio. 
+
+```{r}
+# Load the data
+placekick <- read.csv("placekick.BW.csv", header = TRUE, sep = ",")
+head(placekick, 10)
+```
+
+```{r}
+#check the structure of the data frame
+str(placekick)
+```
+
+
+- **2.a:**
+
+```{r}
+mod.fit <- glm(Good ~ Distance + Weather + Wind15 + Temperature + Grass + Pressure + Ice, family = binomial(link = logit), data = placekick )
+summary(mod.fit)
+```
+From above logisitc model summary, we can see that `Clouds` is the base level indicator for `Weather` variable; `Cold` is the base level indicator for `Temperature` variable and `N` is the base level indicator for `Pressure` variable. Also, we can see that **distance**, **SnowRain**, **Sun** (levels of Weather) **Grass** and **Ice** are statistically significant explantory variables for a **Good** kick. 
+
+- **2.b:**
+Let us check the exisitng base level for `Weather` variable 
+```{r}
+# Check the existing base level for Weather
+levels(placekick$Weather)
+```
+
+We see that `Clouds`to be the base level for `Weather` factor variable. Now, we will relevel the dataframe with `Sun` as the base level.
+
+```{r}
+# For Weather variable, relevel the base level to "Sun"
+placekick <- within(placekick, Weather <- relevel(Weather, ref = "Sun"))
+levels(placekick$Weather)
+```
+We can see from above updated levels, "Sun" became the current base level for `Weather` variable. Now let us re run the above logistic model with this updated base level to see difference in the indicator variables.
+
+```{r}
+mod.fit2 <- glm(Good ~ Distance + Weather + Wind15 + Temperature + Grass + Pressure + Ice, family = binomial(link = logit), data = placekick )
+summary(mod.fit2)
+```
+
+- **2.c:**
+
+To test the significance of explantory variables, let us run the Likelihood Ratio Test using `Anova` function from `car` package
+```{r}
+Anova(mod.fit, test="LR")
+```
+
+From above `LRT` test results, we can see that `Distance`, `Grass` and `Ice` are significant explanatory variables that could explain the logisitc model.
+
+- **2.d:** 
+Estimated Odds Ratio for a change of c units in x is:
+$$
+\widehat {OR} = \frac{Odds_{x+c}}{Odds_x} = exp(c\hat \beta_1)
+$$
+$(1-\alpha) 100 \% \space Wald \space C.I \space for \space estimated \space OR :$ 
+$$
+ exp(c\beta_1 \pm c Z_{1-\frac{\alpha}{2}} \sqrt{\widehat{Var}(\hat \beta_1)})
+$$ 
+```{r}
+# Estmated Odds Ratio for 1 unit distance change
+OR_distance <- exp(mod.fit$coefficients[2]) 
+OR_distance
+```
+Let us evaluate the Wald Confidence Interval for OR.
+```{r}
+b.ci <- confint.default(mod.fit, "Distance", 0.95)
+cat('95% C.I. for OR:\n', b.ci)
+cat('For c = -15 yards, 95% C.I. for OR:\n', rev(exp(-15 * b.ci)))
+
+```
+We see from above results, every decreae in 15 yards in distance will result in an increase in the odds of success by 4 to 6 times. 
+
+
+\newpage
+
+**Question 3.1:** Examine the data and conduct EDA
+
+```{r warning=FALSE}
+# Load the admissions data
+admissions <- read.csv("admissions.csv", header = TRUE, sep = ",")
+head(admissions)
+```
+
+
+```{r warning=FALSE}
+#Check the summary of admissions dataframe
+summary(admissions)
+# Check the structure of admissions dataframe
+str(admissions)
+```
+
+
+```{r warning=FALSE}
+# Update the rank variable data type to factor from int
+admissions$rank <- factor(admissions$rank)
+levels(admissions$rank)
+```
+
+
+```{r warning=FALSE}
+xtabs(~admit + rank, data = admissions)
+cat('\n proportional cross table for admit by rank:\n\n')
+round(prop.table(xtabs(~admit + rank, data = admissions)), 2)
+```
+
+
+```{r warning=FALSE}
+scatterplotMatrix(~gre+gpa+rank|admit, data=admissions, legend = TRUE, regLine = TRUE,  main="admit by explanatory variables")
+```
+
+
+**Question 3.2:** Estimate a binary logistic regression using the following set of explanatory variables: $gre$, $gpa$, $rank$, $gre^2$, $gpa^2$, and $gre \times gpa$, where $gre \times gpa$ denotes the interaction between $gre$ and $gpa$ variables
+```{r}
+logit.model <- glm(admit ~ gre + gpa + rank + I(gre^2) + I(gpa^2) + gre:gpa, data = admissions, family = binomial(link="logit"))
+summary(logit.model)
+```
+**Question 3.3:** Test the hypothesis that GRE has no effect on admission using the likelihood ratio test
+
+Let us quickly check the above model's explanatory variables' significance using `LRT`
+
+```{r}
+Anova(logit.model, test="LR")
+```
+From above `LRT` results, `gre` seems to not significant. However, rank and gre-gpa interaction look significant
+Let us build another model (H0) to test the null hypothesis that `gre` has no effect on admission.
+```{r}
+logit.model2 <- glm(admit ~   gpa + rank + I(gre^2) + I(gpa^2) + gre:gpa, data = admissions, family = binomial(link="logit"))
+```
+Now, let us compare these two models aginst `LRT` test. 
+```{r}
+anova(logit.model2, logit.model, "LRT")
+```
+From above results, we can say that `gre` has no significance in admission. However, gre-gpa interaction has some effect on admission.
+
+
+**Question 3.4:** What is the estimated effect of college GPA on admission?
+
+
+
+
+**Question 3.5:** Construct the confidence interval for the admission probability for the students with $GPA = 3.3$, $GRE = 720$, and $rank=1$
+
+```{r}
+K <- matrix (data= c(1, 720, 3.3, 0,0,0, 720*720, 3.3*3.3, 720*3.3), nrow =1, ncol = 9)
+linear.model.fit <- mcprofile(logit.model, CM = K)
+ci.logit.profile <- confint(linear.model.fit, level = 0.95)
+
+round(exp(ci.logit.profile$confint)/(1 + exp(ci.logit.profile$confint)), 2)
+```
+From above confidence interval, we can see that the probability of admit is 0.44 < $\hat\pi$ < .74  
+
+
+\newpage
+
+**Question 4.1:** Estimate a binary logistic regression with `lfp`, which is a binary variable recoding the participation of the females in the sample, as the dependent variable. The set of explanatory variables includes `age`, `inc`, `wc`, `hc`, `lwg`, `totalKids`, and a quadratic term of `age`, called `age_squared`, where `totalKids` is the total number of children up to age $18$ and is equal to the sum of `k5` and `k618`.
+
+```{r}
+data(Mroz) # Load th data
+Mroz$totalKids <- Mroz$k5 + Mroz$k618 # Add another column totalKids to Mroz 
+str(Mroz)
+```
+Let us create a logisitc model for `lfp` 
+```{r}
+mroz.glm <- glm(lfp ~ age + wc + hc + lwg + inc + totalKids + I(age^2), family = binomial(link = logit), data = Mroz)
+summary(mroz.glm) # Summary of the logit model
+```
+From above model's summary e can see that all explanatory variables except husband education are significant for the model estimation.
+
+**Question 4.2:** Is the age effect statistically significant? 
+
+```{r}
+Anova(mroz.glm, test="LR")
+```
+
+Yes. `age` of the women has statistical significance for the model.
+
+**Question 4.3:** What is the effect of a decrease in age by $5$ years on the odds of labor force participation for a female who was $45$ years of age.
+
+Odds Ratio for $logit(\pi) =  \beta_0 + \beta_1x_1 + \beta_2x_1^2:$
+
+$$
+exp(c\beta_1+c\beta_2(2x_1+c))
+$$
+
+```{r}
+c <- -5
+x1 <- 45
+beta1 <- mroz.glm$coefficients[2]
+beta2 <- mroz.glm$coefficients[8]
+OR <- exp(c*beta1 + (c*beta2)*(2*x1 + c))
+OR
+```
+From above result, we can say that the Odds Ratio of `lfp` is 1.17 times more likely when the age is 45 and decreases by 5 years.
+
+
+**Question 4.4:** Estimate the profile likelihood confidence interval of the probability of labor force participation for females who were $40$ years old, had income equal to $20$, did not attend college, had log wage equal to 1, and did not have children.
+
+
+```{r}
+alpha = 0.5
+predict.data <- data.frame(age = 40,
+						               inc = 20,
+                           wc = factor("no"), 
+                           hc = factor("no"),
+                           lwg = 1,
+						               totalKids = 0)
+
+linear.pred <- predict(object = mroz.glm, newdata = predict.data,
+                      type = "link", se = TRUE)
+pi.hat <- exp(linear.pred$fit)/(1+exp(linear.pred$fit))
+CI.lin.pred <- linear.pred$fit + qnorm(p = c(alpha/2,1-alpha/2))*linear.pred$se
+CI.pi = exp(CI.lin.pred)/(1+exp(CI.lin.pred))
+
+
+round(data.frame(pi.hat, lower=CI.pi[1], upper=CI.pi[2]),4)
+```
+
+
+\newpage
+# 5: Maximum Likelihood (2 points)
+
+**Question 18 a and b of Chapter 3 (page 192,193)**
+
+For the wheat kernel data (*wheat.csv*), consider a model to estimate the kernel condition using the density explanatory variable as a linear term.
+
+**Question 5.1** Write an R function that computes the log-likelihood
+function for the multinomial regression model. Evaluate the function at the parameter estimates produced by multinom(), and verify that your computed value is the same as that produced by logLik() (use the object saved from multinom() within this function).
+
+**Question 5.2** Maximize the log-likelihood function using optim() to obtain the MLEs and the estimated covariance matrix. Compare your answers to what is obtained by multinom(). Note that to obtain starting values for optim(), one approach is to estimate separate logistic regression models for $log \left( \frac{\pi_2}{\pi_1} \right)$ and $log \left( \frac{\pi_3}{\pi_1} \right)$. These models are estimated only for those observations that have the corresponding responses (e.g., a $Y = 1$ or $Y = 2$ for $log \left( \frac{\pi_2}{\pi_1} \right)$).
+
+```{r}
+wheat <- read.csv("wheat.csv", header = TRUE, sep = ",")
+head(wheat)
+```
+```{r}
+str(wheat)
+```
+```{r}
+levels(wheat$type)
+```
+
+
+```{r}
+mod.fit <- multinom(formula = type ~ density, data = wheat)
+summary(mod.fit)
+```
+```{r}
+Anova(mod.fit)
+```
+```{r}
+logLik(mod.fit)
+```
+
+```{r}
+logL = function(beta, x, Y){
+  pi1 <- exp(beta[1] + beta[2]*x)/(1+exp(beta[1]+beta[2]*x)+exp(beta[3]+beta[4]*x))
+  pi2 <- exp(beta[3] + beta[4]*x)/(1+exp(beta[1]+beta[2]*x)+exp(beta[3]+beta[4]*x))
+  v <- ( log(pi1))+( log(pi2))
+  sum(v)
+}
+betaComb <- cbind(coefficients(mod.fit)[1,1:2], coefficients(mod.fit)[2,1:2])
+logLvalue <- logL(beta=betaComb, x = wheat$density, Y = as.numeric(wheat$type))
+logLvalue
+
+```
+

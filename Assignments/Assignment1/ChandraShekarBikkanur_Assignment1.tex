@@ -1,0 +1,1288 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={W271 - Assignment 1},
+            pdfauthor={Chandra Shekar Bikkanur},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{W271 - Assignment 1}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Chandra Shekar Bikkanur}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+    \date{}
+    \predate{}\postdate{}
+  
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Loading some libraries for this assignment}
+\KeywordTok{library}\NormalTok{(car)}
+\KeywordTok{library}\NormalTok{(dplyr)}
+\KeywordTok{library}\NormalTok{(Hmisc)}
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(mcprofile)}
+\KeywordTok{library}\NormalTok{(nnet)}
+\KeywordTok{library}\NormalTok{(MASS)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Question 1.1:} Use the code from the week 1 live session file
+and: (1) redo the exercise for \texttt{n=50,\ n=100,\ n=500}, (2) plot
+the graphs, and (3) describe what you have observed from the results.
+Use the same \texttt{pi.seq} as in the live session code.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{1.1.1:}
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# function to get the wald true coverage }
+\NormalTok{wald.CI.true.coverage =}\StringTok{ }\ControlFlowTok{function}\NormalTok{(pi, }\DataTypeTok{alpha=}\FloatTok{0.05}\NormalTok{, n) \{  }
+\NormalTok{  w =}\StringTok{ }\DecValTok{0}\OperatorTok{:}\NormalTok{n}
+\NormalTok{  pi.hat =}\StringTok{ }\NormalTok{w}\OperatorTok{/}\NormalTok{n}
+\NormalTok{  pmf =}\StringTok{ }\KeywordTok{dbinom}\NormalTok{(}\DataTypeTok{x=}\NormalTok{w, }\DataTypeTok{size=}\NormalTok{n, }\DataTypeTok{prob=}\NormalTok{pi)  }
+\NormalTok{  var.wald =}\StringTok{ }\NormalTok{pi.hat}\OperatorTok{*}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\NormalTok{pi.hat)}\OperatorTok{/}\NormalTok{n}
+\NormalTok{  wald.CI_lower.bound =}\StringTok{ }\NormalTok{pi.hat }\OperatorTok{-}\StringTok{ }\KeywordTok{qnorm}\NormalTok{(}\DataTypeTok{p =} \DecValTok{1}\OperatorTok{-}\NormalTok{alpha}\OperatorTok{/}\DecValTok{2}\NormalTok{)}\OperatorTok{*}\KeywordTok{sqrt}\NormalTok{(var.wald)}
+\NormalTok{  wald.CI_upper.bound =}\StringTok{ }\NormalTok{pi.hat }\OperatorTok{+}\StringTok{ }\KeywordTok{qnorm}\NormalTok{(}\DataTypeTok{p =} \DecValTok{1}\OperatorTok{-}\NormalTok{alpha}\OperatorTok{/}\DecValTok{2}\NormalTok{)}\OperatorTok{*}\KeywordTok{sqrt}\NormalTok{(var.wald)  }
+\NormalTok{  covered.pi =}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(}\DataTypeTok{test =}\NormalTok{ pi}\OperatorTok{>}\NormalTok{wald.CI_lower.bound, }\DataTypeTok{yes =} \KeywordTok{ifelse}\NormalTok{(}\DataTypeTok{test =}\NormalTok{ pi}\OperatorTok{<}\NormalTok{wald.CI_upper.bound, }\DataTypeTok{yes=}\DecValTok{1}\NormalTok{, }\DataTypeTok{no=}\DecValTok{0}\NormalTok{), }\DataTypeTok{no=}\DecValTok{0}\NormalTok{)  }
+\NormalTok{  wald.CI.true.coverage =}\StringTok{ }\KeywordTok{sum}\NormalTok{(covered.pi}\OperatorTok{*}\NormalTok{pmf)  }
+\NormalTok{  wald.df =}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(w, pi.hat, }\KeywordTok{round}\NormalTok{(}\KeywordTok{data.frame}\NormalTok{(pmf, wald.CI_lower.bound,wald.CI_upper.bound),}\DecValTok{4}\NormalTok{), covered.pi)  }
+  \KeywordTok{return}\NormalTok{(wald.df)}
+\NormalTok{\}}
+
+\CommentTok{# function to get the wald true coverage matrix for different pi values}
+\NormalTok{get.wald.CI.true.matrix =}\StringTok{ }\ControlFlowTok{function}\NormalTok{(pi, }\DataTypeTok{alpha=}\FloatTok{0.05}\NormalTok{, n) \{}
+\NormalTok{   wald.df =}\StringTok{ }\KeywordTok{wald.CI.true.coverage}\NormalTok{(}\DataTypeTok{pi=}\NormalTok{pi, }\DataTypeTok{alpha=}\FloatTok{0.05}\NormalTok{, }\DataTypeTok{n=}\NormalTok{n)}
+\NormalTok{   wald.CI.true.coverage.level =}\StringTok{ }\KeywordTok{sum}\NormalTok{(wald.df}\OperatorTok{$}\NormalTok{covered.pi}\OperatorTok{*}\NormalTok{wald.df}\OperatorTok{$}\NormalTok{pmf)}
+\NormalTok{   pi.seq =}\StringTok{ }\KeywordTok{seq}\NormalTok{(}\FloatTok{0.01}\NormalTok{,}\FloatTok{0.99}\NormalTok{, }\DataTypeTok{by=}\FloatTok{0.01}\NormalTok{)}
+\NormalTok{   wald.CI.true.matrix =}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\DataTypeTok{data=}\OtherTok{NA}\NormalTok{,}\DataTypeTok{nrow=}\KeywordTok{length}\NormalTok{(pi.seq),}\DataTypeTok{ncol=}\DecValTok{2}\NormalTok{)}
+\NormalTok{   counter=}\DecValTok{1}
+   \ControlFlowTok{for}\NormalTok{ (pi }\ControlFlowTok{in}\NormalTok{ pi.seq) \{}
+\NormalTok{        wald.df2 =}\StringTok{ }\KeywordTok{wald.CI.true.coverage}\NormalTok{(}\DataTypeTok{pi=}\NormalTok{pi, }\DataTypeTok{alpha=}\FloatTok{0.05}\NormalTok{, }\DataTypeTok{n=}\NormalTok{n)}
+\NormalTok{        wald.CI.true.matrix[counter,] =}\StringTok{ }\KeywordTok{c}\NormalTok{(pi,}\KeywordTok{sum}\NormalTok{(wald.df2}\OperatorTok{$}\NormalTok{covered.pi}\OperatorTok{*}\NormalTok{wald.df2}\OperatorTok{$}\NormalTok{pmf))}
+\NormalTok{        counter =}\StringTok{ }\NormalTok{counter}\OperatorTok{+}\DecValTok{1}
+\NormalTok{       \}}
+   \KeywordTok{return}\NormalTok{(wald.CI.true.matrix)}
+\NormalTok{\}}
+\NormalTok{wald.CI.true.matrix_}\DecValTok{10}\NormalTok{   =}\StringTok{ }\KeywordTok{get.wald.CI.true.matrix}\NormalTok{(}\DataTypeTok{pi =} \FloatTok{0.6}\NormalTok{, }\DataTypeTok{alpha=}\FloatTok{0.05}\NormalTok{, }\DataTypeTok{n=}\DecValTok{10}\NormalTok{)}
+\NormalTok{wald.CI.true.matrix_}\DecValTok{50}\NormalTok{   =}\StringTok{ }\KeywordTok{get.wald.CI.true.matrix}\NormalTok{(}\DataTypeTok{pi =} \FloatTok{0.6}\NormalTok{, }\DataTypeTok{alpha=}\FloatTok{0.05}\NormalTok{, }\DataTypeTok{n=}\DecValTok{50}\NormalTok{)}
+\NormalTok{wald.CI.true.matrix_}\DecValTok{100}\NormalTok{  =}\StringTok{ }\KeywordTok{get.wald.CI.true.matrix}\NormalTok{(}\DataTypeTok{pi =} \FloatTok{0.6}\NormalTok{, }\DataTypeTok{alpha=}\FloatTok{0.05}\NormalTok{, }\DataTypeTok{n=}\DecValTok{100}\NormalTok{)}
+\NormalTok{wald.CI.true.matrix_}\DecValTok{500}\NormalTok{  =}\StringTok{ }\KeywordTok{get.wald.CI.true.matrix}\NormalTok{(}\DataTypeTok{pi =} \FloatTok{0.6}\NormalTok{, }\DataTypeTok{alpha=}\FloatTok{0.05}\NormalTok{, }\DataTypeTok{n=}\DecValTok{500}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\vspace{0.25in}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{1.1.2:}
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Plot the true coverage level (for given n and alpha)}
+\NormalTok{alpha=}\FloatTok{0.05}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=}\KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\CommentTok{# n=10}
+\KeywordTok{plot}\NormalTok{(}\DataTypeTok{x=}\NormalTok{wald.CI.true.matrix_}\DecValTok{10}\NormalTok{[,}\DecValTok{1}\NormalTok{],}
+     \DataTypeTok{y=}\NormalTok{wald.CI.true.matrix_}\DecValTok{10}\NormalTok{[,}\DecValTok{2}\NormalTok{],}
+     \DataTypeTok{ylim=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{),}
+     \DataTypeTok{main =} \StringTok{"Wald C.I. True Confidence Level Coverage for n = 10"}\NormalTok{, }\DataTypeTok{xlab=}\KeywordTok{expression}\NormalTok{(pi),}
+     \DataTypeTok{ylab=}\StringTok{"True Confidence Level"}\NormalTok{,}
+     \DataTypeTok{type=}\StringTok{"l"}\NormalTok{)}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{h=}\DecValTok{1}\OperatorTok{-}\NormalTok{alpha, }\DataTypeTok{lty=}\StringTok{"dotted"}\NormalTok{)}
+\CommentTok{# n=50}
+\KeywordTok{plot}\NormalTok{(}\DataTypeTok{x=}\NormalTok{wald.CI.true.matrix_}\DecValTok{50}\NormalTok{[,}\DecValTok{1}\NormalTok{],}
+     \DataTypeTok{y=}\NormalTok{wald.CI.true.matrix_}\DecValTok{50}\NormalTok{[,}\DecValTok{2}\NormalTok{],}
+     \DataTypeTok{ylim=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{),}
+     \DataTypeTok{main =} \StringTok{"Wald C.I. True Confidence Level Coverage for n = 50"}\NormalTok{, }\DataTypeTok{xlab=}\KeywordTok{expression}\NormalTok{(pi),}
+     \DataTypeTok{ylab=}\StringTok{"True Confidence Level"}\NormalTok{,}
+     \DataTypeTok{type=}\StringTok{"l"}\NormalTok{)}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{h=}\DecValTok{1}\OperatorTok{-}\NormalTok{alpha, }\DataTypeTok{lty=}\StringTok{"dotted"}\NormalTok{)}
+\CommentTok{# n=100}
+\KeywordTok{plot}\NormalTok{(}\DataTypeTok{x=}\NormalTok{wald.CI.true.matrix_}\DecValTok{100}\NormalTok{[,}\DecValTok{1}\NormalTok{],}
+     \DataTypeTok{y=}\NormalTok{wald.CI.true.matrix_}\DecValTok{100}\NormalTok{[,}\DecValTok{2}\NormalTok{],}
+     \DataTypeTok{ylim=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{),}
+     \DataTypeTok{main =} \StringTok{"Wald C.I. True Confidence Level Coverage for n = 100"}\NormalTok{, }\DataTypeTok{xlab=}\KeywordTok{expression}\NormalTok{(pi),}
+     \DataTypeTok{ylab=}\StringTok{"True Confidence Level"}\NormalTok{,}
+     \DataTypeTok{type=}\StringTok{"l"}\NormalTok{)}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{h=}\DecValTok{1}\OperatorTok{-}\NormalTok{alpha, }\DataTypeTok{lty=}\StringTok{"dotted"}\NormalTok{)}
+\CommentTok{# n=500}
+\KeywordTok{plot}\NormalTok{(}\DataTypeTok{x=}\NormalTok{wald.CI.true.matrix_}\DecValTok{500}\NormalTok{[,}\DecValTok{1}\NormalTok{],}
+     \DataTypeTok{y=}\NormalTok{wald.CI.true.matrix_}\DecValTok{500}\NormalTok{[,}\DecValTok{2}\NormalTok{],}
+     \DataTypeTok{ylim=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{),}
+     \DataTypeTok{main =} \StringTok{"Wald C.I. True Confidence Level Coverage for n = 500"}\NormalTok{, }\DataTypeTok{xlab=}\KeywordTok{expression}\NormalTok{(pi),}
+     \DataTypeTok{ylab=}\StringTok{"True Confidence Level"}\NormalTok{,}
+     \DataTypeTok{type=}\StringTok{"l"}\NormalTok{)}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{h=}\DecValTok{1}\OperatorTok{-}\NormalTok{alpha, }\DataTypeTok{lty=}\StringTok{"dotted"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ChandraShekarBikkanur_Assignment1_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\vspace{0.25in}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{1.1.3:} From above 4 plots, we can see that the confidence
+  level coverage is increasing(less fluctuating) as the number of
+  samples increases from 10, 50, 100 to 500.
+\end{itemize}
+
+\vspace{0.45in}
+
+\textbf{Question 1.2:} (1) Modify the code for the Wilson Interval. (2)
+Do the exercise for \texttt{n=10,\ n=50,\ n=100,\ n=500}. (3) Plot the
+graphs. (4) Describe what you have observed from the results and compare
+the Wald and Wilson intervals based on your results. Use the same
+\texttt{pi.seq} as in the live session code.
+
+\vspace{0.25in}
+
+Wilson Confidence Interval for an estimated parameter \(\tilde{\pi}\) is
+as follows
+
+\[ 
+\tilde{\pi} \pm \frac{Z_{1-\frac{\alpha}{2}} n^{1/2}}{n + Z^2_{1-\frac{\alpha}{2}}} \sqrt{\hat{\pi}(1-\hat{\pi}) + \frac{Z^2_{1-\frac{\alpha}{2}}}{4n}}
+\]
+
+where \(\tilde{\pi}\) is defined as
+
+\[
+\tilde{\pi} = \frac{w + \frac{1}{2}Z^2_{1-\frac{\alpha}{2}}}{n + Z^2_{1-\frac{\alpha}{2}}}
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{1.2.1:}
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# function to get the wilson true coverage}
+\NormalTok{wilson.CI.true.coverage =}\StringTok{ }\ControlFlowTok{function}\NormalTok{(pi, }\DataTypeTok{alpha=}\FloatTok{0.05}\NormalTok{, n) \{  }
+\NormalTok{  w =}\StringTok{ }\DecValTok{0}\OperatorTok{:}\NormalTok{n}
+\NormalTok{  Z =}\StringTok{ }\KeywordTok{qnorm}\NormalTok{(}\DataTypeTok{p =} \DecValTok{1}\OperatorTok{-}\NormalTok{alpha}\OperatorTok{/}\DecValTok{2}\NormalTok{)}
+\NormalTok{  Z2 =}\StringTok{ }\NormalTok{Z}\OperatorTok{^}\DecValTok{2}
+\NormalTok{  pi.hat =}\StringTok{ }\NormalTok{(w}\OperatorTok{+}\NormalTok{(Z2}\OperatorTok{/}\DecValTok{2}\NormalTok{))}\OperatorTok{/}\NormalTok{(n}\OperatorTok{+}\NormalTok{Z2)}
+\NormalTok{  pmf =}\StringTok{ }\KeywordTok{dbinom}\NormalTok{(}\DataTypeTok{x=}\NormalTok{w, }\DataTypeTok{size=}\NormalTok{n, }\DataTypeTok{prob=}\NormalTok{pi)}
+\NormalTok{  delta =}\StringTok{ }\NormalTok{(Z}\OperatorTok{*}\KeywordTok{sqrt}\NormalTok{(n))}\OperatorTok{*}\KeywordTok{sqrt}\NormalTok{((pi.hat }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{pi.hat)) }\OperatorTok{+}\StringTok{ }\NormalTok{(Z2)}\OperatorTok{/}\NormalTok{(}\DecValTok{4}\OperatorTok{*}\NormalTok{n))}\OperatorTok{/}\NormalTok{(n}\OperatorTok{+}\NormalTok{Z2)}
+\NormalTok{  wilson.CI_lower.bound =}\StringTok{ }\NormalTok{pi.hat }\OperatorTok{-}\StringTok{ }\NormalTok{delta}
+\NormalTok{  wilson.CI_upper.bound =}\StringTok{ }\NormalTok{pi.hat }\OperatorTok{+}\StringTok{ }\NormalTok{delta  }
+\NormalTok{  covered.pi =}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(}\DataTypeTok{test =}\NormalTok{ pi}\OperatorTok{>}\NormalTok{wilson.CI_lower.bound, }\DataTypeTok{yes =} \KeywordTok{ifelse}\NormalTok{(}\DataTypeTok{test =}\NormalTok{ pi}\OperatorTok{<}\NormalTok{wilson.CI_upper.bound, }\DataTypeTok{yes=}\DecValTok{1}\NormalTok{, }\DataTypeTok{no=}\DecValTok{0}\NormalTok{), }\DataTypeTok{no=}\DecValTok{0}\NormalTok{)  }
+\NormalTok{  wilson.CI.true.coverage =}\StringTok{ }\KeywordTok{sum}\NormalTok{(covered.pi}\OperatorTok{*}\NormalTok{pmf)  }
+\NormalTok{  wilson.df =}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(w, pi.hat, }\KeywordTok{round}\NormalTok{(}\KeywordTok{data.frame}\NormalTok{(pmf, wilson.CI_lower.bound,wilson.CI_upper.bound),}\DecValTok{4}\NormalTok{), covered.pi)  }
+  \KeywordTok{return}\NormalTok{(wilson.df)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{1.2.2:}
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# function to get the wilson true coverage matrix for different pi values}
+\NormalTok{get.wilson.CI.true.matrix =}\StringTok{ }\ControlFlowTok{function}\NormalTok{(pi, }\DataTypeTok{alpha=}\FloatTok{0.05}\NormalTok{, n) \{}
+\NormalTok{   wilson.df =}\StringTok{ }\KeywordTok{wilson.CI.true.coverage}\NormalTok{(}\DataTypeTok{pi=}\NormalTok{pi, }\DataTypeTok{alpha=}\FloatTok{0.05}\NormalTok{, }\DataTypeTok{n=}\NormalTok{n)}
+\NormalTok{   wilson.CI.true.coverage.level =}\StringTok{ }\KeywordTok{sum}\NormalTok{(wilson.df}\OperatorTok{$}\NormalTok{covered.pi}\OperatorTok{*}\NormalTok{wilson.df}\OperatorTok{$}\NormalTok{pmf)}
+\NormalTok{   pi.seq =}\StringTok{ }\KeywordTok{seq}\NormalTok{(}\FloatTok{0.01}\NormalTok{,}\FloatTok{0.99}\NormalTok{, }\DataTypeTok{by=}\FloatTok{0.01}\NormalTok{)}
+\NormalTok{   wilson.CI.true.matrix =}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\DataTypeTok{data=}\OtherTok{NA}\NormalTok{,}\DataTypeTok{nrow=}\KeywordTok{length}\NormalTok{(pi.seq),}\DataTypeTok{ncol=}\DecValTok{2}\NormalTok{)}
+\NormalTok{   counter=}\DecValTok{1}
+   \ControlFlowTok{for}\NormalTok{ (pi }\ControlFlowTok{in}\NormalTok{ pi.seq) \{}
+\NormalTok{        wilson.df2 =}\StringTok{ }\KeywordTok{wilson.CI.true.coverage}\NormalTok{(}\DataTypeTok{pi=}\NormalTok{pi, }\DataTypeTok{alpha=}\FloatTok{0.05}\NormalTok{, }\DataTypeTok{n=}\NormalTok{n)}
+\NormalTok{        wilson.CI.true.matrix[counter,] =}\StringTok{ }\KeywordTok{c}\NormalTok{(pi,}\KeywordTok{sum}\NormalTok{(wilson.df2}\OperatorTok{$}\NormalTok{covered.pi}\OperatorTok{*}\NormalTok{wilson.df2}\OperatorTok{$}\NormalTok{pmf))}
+\NormalTok{        counter =}\StringTok{ }\NormalTok{counter}\OperatorTok{+}\DecValTok{1}
+\NormalTok{       \}}
+   \KeywordTok{return}\NormalTok{(wilson.CI.true.matrix)}
+\NormalTok{\}}
+\NormalTok{wilson.CI.true.matrix_}\DecValTok{10}\NormalTok{   =}\StringTok{ }\KeywordTok{get.wilson.CI.true.matrix}\NormalTok{(}\DataTypeTok{pi =} \FloatTok{0.6}\NormalTok{, }\DataTypeTok{alpha=}\FloatTok{0.05}\NormalTok{, }\DataTypeTok{n=}\DecValTok{10}\NormalTok{)}
+\NormalTok{wilson.CI.true.matrix_}\DecValTok{50}\NormalTok{   =}\StringTok{ }\KeywordTok{get.wilson.CI.true.matrix}\NormalTok{(}\DataTypeTok{pi =} \FloatTok{0.6}\NormalTok{, }\DataTypeTok{alpha=}\FloatTok{0.05}\NormalTok{, }\DataTypeTok{n=}\DecValTok{50}\NormalTok{)}
+\NormalTok{wilson.CI.true.matrix_}\DecValTok{100}\NormalTok{   =}\StringTok{ }\KeywordTok{get.wilson.CI.true.matrix}\NormalTok{(}\DataTypeTok{pi =} \FloatTok{0.6}\NormalTok{, }\DataTypeTok{alpha=}\FloatTok{0.05}\NormalTok{, }\DataTypeTok{n=}\DecValTok{100}\NormalTok{)}
+\NormalTok{wilson.CI.true.matrix_}\DecValTok{500}\NormalTok{   =}\StringTok{ }\KeywordTok{get.wilson.CI.true.matrix}\NormalTok{(}\DataTypeTok{pi =} \FloatTok{0.6}\NormalTok{, }\DataTypeTok{alpha=}\FloatTok{0.05}\NormalTok{, }\DataTypeTok{n=}\DecValTok{500}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{1.2.3:}
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Plot the true coverage level (for given n and alpha)}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=}\KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\CommentTok{# n=10}
+\KeywordTok{plot}\NormalTok{(}\DataTypeTok{x=}\NormalTok{wilson.CI.true.matrix_}\DecValTok{10}\NormalTok{[,}\DecValTok{1}\NormalTok{],}
+     \DataTypeTok{y=}\NormalTok{wilson.CI.true.matrix_}\DecValTok{10}\NormalTok{[,}\DecValTok{2}\NormalTok{],}
+     \DataTypeTok{ylim=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{),}
+     \DataTypeTok{main =} \StringTok{"Wilson C.I. True Confidence Level Coverage for n = 10"}\NormalTok{, }\DataTypeTok{xlab=}\KeywordTok{expression}\NormalTok{(pi),}
+     \DataTypeTok{ylab=}\StringTok{"True Confidence Level"}\NormalTok{,}
+     \DataTypeTok{type=}\StringTok{"l"}\NormalTok{)}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{h=}\DecValTok{1}\OperatorTok{-}\NormalTok{alpha, }\DataTypeTok{lty=}\StringTok{"dotted"}\NormalTok{)}
+\CommentTok{# n=50}
+\KeywordTok{plot}\NormalTok{(}\DataTypeTok{x=}\NormalTok{wilson.CI.true.matrix_}\DecValTok{50}\NormalTok{[,}\DecValTok{1}\NormalTok{],}
+     \DataTypeTok{y=}\NormalTok{wilson.CI.true.matrix_}\DecValTok{50}\NormalTok{[,}\DecValTok{2}\NormalTok{],}
+     \DataTypeTok{ylim=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{),}
+     \DataTypeTok{main =} \StringTok{"Wilson C.I. True Confidence Level Coverage for n = 50"}\NormalTok{, }\DataTypeTok{xlab=}\KeywordTok{expression}\NormalTok{(pi),}
+     \DataTypeTok{ylab=}\StringTok{"True Confidence Level"}\NormalTok{,}
+     \DataTypeTok{type=}\StringTok{"l"}\NormalTok{)}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{h=}\DecValTok{1}\OperatorTok{-}\NormalTok{alpha, }\DataTypeTok{lty=}\StringTok{"dotted"}\NormalTok{)}
+\CommentTok{# n=100}
+\KeywordTok{plot}\NormalTok{(}\DataTypeTok{x=}\NormalTok{wilson.CI.true.matrix_}\DecValTok{100}\NormalTok{[,}\DecValTok{1}\NormalTok{],}
+     \DataTypeTok{y=}\NormalTok{wilson.CI.true.matrix_}\DecValTok{100}\NormalTok{[,}\DecValTok{2}\NormalTok{],}
+     \DataTypeTok{ylim=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{),}
+     \DataTypeTok{main =} \StringTok{"Wilson C.I. True Confidence Level Coverage for n = 100"}\NormalTok{, }\DataTypeTok{xlab=}\KeywordTok{expression}\NormalTok{(pi),}
+     \DataTypeTok{ylab=}\StringTok{"True Confidence Level"}\NormalTok{,}
+     \DataTypeTok{type=}\StringTok{"l"}\NormalTok{)}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{h=}\DecValTok{1}\OperatorTok{-}\NormalTok{alpha, }\DataTypeTok{lty=}\StringTok{"dotted"}\NormalTok{)}
+\CommentTok{# n=500}
+\KeywordTok{plot}\NormalTok{(}\DataTypeTok{x=}\NormalTok{wilson.CI.true.matrix_}\DecValTok{500}\NormalTok{[,}\DecValTok{1}\NormalTok{],}
+     \DataTypeTok{y=}\NormalTok{wilson.CI.true.matrix_}\DecValTok{500}\NormalTok{[,}\DecValTok{2}\NormalTok{],}
+     \DataTypeTok{ylim=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{),}
+     \DataTypeTok{main =} \StringTok{"Wilson C.I. True Confidence Level Coverage for n = 500"}\NormalTok{, }\DataTypeTok{xlab=}\KeywordTok{expression}\NormalTok{(pi),}
+     \DataTypeTok{ylab=}\StringTok{"True Confidence Level"}\NormalTok{,}
+     \DataTypeTok{type=}\StringTok{"l"}\NormalTok{)}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{h=}\DecValTok{1}\OperatorTok{-}\NormalTok{alpha, }\DataTypeTok{lty=}\StringTok{"dotted"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ChandraShekarBikkanur_Assignment1_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\vspace{0.25in}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{1.2.4:} From the plots for wald confidence coverage and wilson
+  confidence coverage, we can see that the wilson confidence coverage
+  shows the 95\% coverage relatively more accurate for less number of
+  samples than wald coverage. \newpage
+\end{itemize}
+
+\textbf{Question 2:} Using the \texttt{placekick.BW.csv} data,
+\texttt{Distance}, \texttt{Weather}, \texttt{Wind15},
+\texttt{Temperature}, \texttt{Grass}, \texttt{Pressure}, and
+\texttt{Ice} as explanatory variables in a logistic regression model,
+complete the following:
+
+\begin{itemize}
+\item
+  \begin{enumerate}
+  \def\labelenumi{(\alph{enumi})}
+  \tightlist
+  \item
+    Estimate the model and properly deﬁne the indicator variables used
+    within it.
+  \end{enumerate}
+\item
+  \begin{enumerate}
+  \def\labelenumi{(\alph{enumi})}
+  \setcounter{enumi}{1}
+  \tightlist
+  \item
+    The authors use ``Sun'' as the base level category for Weather,
+    which is not the default level that R uses. Describe how ``Sun'' can
+    be speciﬁed as the base level in R.
+  \end{enumerate}
+\item
+  \begin{enumerate}
+  \def\labelenumi{(\alph{enumi})}
+  \setcounter{enumi}{2}
+  \tightlist
+  \item
+    Perform LRTs for all explanatory variables to evaluate their
+    importance within the model. Discuss the results.
+  \end{enumerate}
+\item
+  \begin{enumerate}
+  \def\labelenumi{(\alph{enumi})}
+  \setcounter{enumi}{3}
+  \tightlist
+  \item
+    Estimate an appropriate odds ratio for distance, and compute the
+    corresponding conﬁdence interval. Interpret the odds ratio.
+  \end{enumerate}
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Load the data}
+\NormalTok{placekick <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"placekick.BW.csv"}\NormalTok{, }\DataTypeTok{header =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{sep =} \StringTok{","}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(placekick, }\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      GameNum Kicker Good Distance Weather Wind15 Temperature Grass
+## 1  2002-0101 Bryant    Y       29     Sun      0        Nice     1
+## 2  2002-0101 Bryant    Y       33     Sun      0        Nice     1
+## 3  2002-0101 Cortez    N       25     Sun      0        Nice     1
+## 4  2002-0101 Cortez    Y       23     Sun      0        Nice     1
+## 5  2002-0101 Cortez    N       48     Sun      0        Nice     1
+## 6  2002-0101 Cortez    Y       33     Sun      0        Nice     1
+## 7  2002-0101 Cortez    Y       36     Sun      0        Nice     1
+## 8  2002-0102   Hall    Y       34     Sun      0         Hot     0
+## 9  2002-0102   Hall    Y       45     Sun      0         Hot     0
+## 10 2002-0102   Hall    N       48     Sun      0         Hot     0
+##    Pressure Ice
+## 1         N   0
+## 2         N   0
+## 3         N   0
+## 4         N   0
+## 5         N   0
+## 6         N   0
+## 7         Y   0
+## 8         N   0
+## 9         N   0
+## 10        N   0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#check the structure of the data frame}
+\KeywordTok{str}\NormalTok{(placekick)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    2003 obs. of  10 variables:
+##  $ GameNum    : Factor w/ 523 levels "2002-0101","2002-0102",..: 1 1 1 1 1 1 1 2 2 2 ...
+##  $ Kicker     : Factor w/ 52 levels "Akers","Andersen",..: 8 8 13 13 13 13 13 27 27 27 ...
+##  $ Good       : Factor w/ 2 levels "N","Y": 2 2 1 2 1 2 2 2 2 1 ...
+##  $ Distance   : int  29 33 25 23 48 33 36 34 45 48 ...
+##  $ Weather    : Factor w/ 4 levels "Clouds","Inside",..: 4 4 4 4 4 4 4 4 4 4 ...
+##  $ Wind15     : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Temperature: Factor w/ 3 levels "Cold","Hot","Nice": 3 3 3 3 3 3 3 2 2 2 ...
+##  $ Grass      : int  1 1 1 1 1 1 1 0 0 0 ...
+##  $ Pressure   : Factor w/ 2 levels "N","Y": 1 1 1 1 1 1 2 1 1 1 ...
+##  $ Ice        : int  0 0 0 0 0 0 0 0 0 0 ...
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{2.a:}
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod.fit <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(Good }\OperatorTok{~}\StringTok{ }\NormalTok{Distance }\OperatorTok{+}\StringTok{ }\NormalTok{Weather }\OperatorTok{+}\StringTok{ }\NormalTok{Wind15 }\OperatorTok{+}\StringTok{ }\NormalTok{Temperature }\OperatorTok{+}\StringTok{ }\NormalTok{Grass }\OperatorTok{+}\StringTok{ }\NormalTok{Pressure }\OperatorTok{+}\StringTok{ }\NormalTok{Ice, }\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(}\DataTypeTok{link =}\NormalTok{ logit), }\DataTypeTok{data =}\NormalTok{ placekick )}
+\KeywordTok{summary}\NormalTok{(mod.fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = Good ~ Distance + Weather + Wind15 + Temperature + 
+##     Grass + Pressure + Ice, family = binomial(link = logit), 
+##     data = placekick)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.6804   0.2599   0.4360   0.7148   1.8698  
+## 
+## Coefficients:
+##                  Estimate Std. Error z value Pr(>|z|)    
+## (Intercept)      5.740185   0.369597  15.531   <2e-16 ***
+## Distance        -0.109600   0.007188 -15.249   <2e-16 ***
+## WeatherInside   -0.083030   0.214711  -0.387   0.6990    
+## WeatherSnowRain -0.444193   0.217852  -2.039   0.0415 *  
+## WeatherSun      -0.247582   0.139642  -1.773   0.0762 .  
+## Wind15          -0.243777   0.175527  -1.389   0.1649    
+## TemperatureHot   0.250013   0.247540   1.010   0.3125    
+## TemperatureNice  0.234932   0.181461   1.295   0.1954    
+## Grass           -0.328435   0.160050  -2.052   0.0402 *  
+## PressureY        0.270174   0.262809   1.028   0.3039    
+## Ice             -0.876133   0.451251  -1.942   0.0522 .  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 2104.0  on 2002  degrees of freedom
+## Residual deviance: 1791.3  on 1992  degrees of freedom
+## AIC: 1813.3
+## 
+## Number of Fisher Scoring iterations: 5
+\end{verbatim}
+
+From above logisitc model summary, we can see that \texttt{Clouds} is
+the base level indicator for \texttt{Weather} variable; \texttt{Cold} is
+the base level indicator for \texttt{Temperature} variable and
+\texttt{N} is the base level indicator for \texttt{Pressure} variable.
+Also, we can see that \textbf{distance}, \textbf{SnowRain}, \textbf{Sun}
+(levels of Weather) \textbf{Grass} and \textbf{Ice} are statistically
+significant explantory variables for a \textbf{Good} kick.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{2.b:} Let us check the exisitng base level for
+  \texttt{Weather} variable
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Check the existing base level for Weather}
+\KeywordTok{levels}\NormalTok{(placekick}\OperatorTok{$}\NormalTok{Weather)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Clouds"   "Inside"   "SnowRain" "Sun"
+\end{verbatim}
+
+We see that \texttt{Clouds}to be the base level for \texttt{Weather}
+factor variable. Now, we will relevel the dataframe with \texttt{Sun} as
+the base level.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# For Weather variable, relevel the base level to "Sun"}
+\NormalTok{placekick <-}\StringTok{ }\KeywordTok{within}\NormalTok{(placekick, Weather <-}\StringTok{ }\KeywordTok{relevel}\NormalTok{(Weather, }\DataTypeTok{ref =} \StringTok{"Sun"}\NormalTok{))}
+\KeywordTok{levels}\NormalTok{(placekick}\OperatorTok{$}\NormalTok{Weather)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Sun"      "Clouds"   "Inside"   "SnowRain"
+\end{verbatim}
+
+We can see from above updated levels, ``Sun'' became the current base
+level for \texttt{Weather} variable. Now let us re run the above
+logistic model with this updated base level to see difference in the
+indicator variables.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod.fit2 <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(Good }\OperatorTok{~}\StringTok{ }\NormalTok{Distance }\OperatorTok{+}\StringTok{ }\NormalTok{Weather }\OperatorTok{+}\StringTok{ }\NormalTok{Wind15 }\OperatorTok{+}\StringTok{ }\NormalTok{Temperature }\OperatorTok{+}\StringTok{ }\NormalTok{Grass }\OperatorTok{+}\StringTok{ }\NormalTok{Pressure }\OperatorTok{+}\StringTok{ }\NormalTok{Ice, }\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(}\DataTypeTok{link =}\NormalTok{ logit), }\DataTypeTok{data =}\NormalTok{ placekick )}
+\KeywordTok{summary}\NormalTok{(mod.fit2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = Good ~ Distance + Weather + Wind15 + Temperature + 
+##     Grass + Pressure + Ice, family = binomial(link = logit), 
+##     data = placekick)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.6804   0.2599   0.4360   0.7148   1.8698  
+## 
+## Coefficients:
+##                  Estimate Std. Error z value Pr(>|z|)    
+## (Intercept)      5.492602   0.370141  14.839   <2e-16 ***
+## Distance        -0.109600   0.007188 -15.249   <2e-16 ***
+## WeatherClouds    0.247582   0.139642   1.773   0.0762 .  
+## WeatherInside    0.164553   0.215062   0.765   0.4442    
+## WeatherSnowRain -0.196611   0.219015  -0.898   0.3693    
+## Wind15          -0.243777   0.175527  -1.389   0.1649    
+## TemperatureHot   0.250013   0.247540   1.010   0.3125    
+## TemperatureNice  0.234932   0.181461   1.295   0.1954    
+## Grass           -0.328435   0.160050  -2.052   0.0402 *  
+## PressureY        0.270174   0.262809   1.028   0.3039    
+## Ice             -0.876133   0.451251  -1.942   0.0522 .  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 2104.0  on 2002  degrees of freedom
+## Residual deviance: 1791.3  on 1992  degrees of freedom
+## AIC: 1813.3
+## 
+## Number of Fisher Scoring iterations: 5
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{2.c:}
+\end{itemize}
+
+To test the significance of explantory variables, let us run the
+Likelihood Ratio Test using \texttt{Anova} function from \texttt{car}
+package
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{Anova}\NormalTok{(mod.fit, }\DataTypeTok{test=}\StringTok{"LR"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Deviance Table (Type II tests)
+## 
+## Response: Good
+##             LR Chisq Df Pr(>Chisq)    
+## Distance     294.341  1    < 2e-16 ***
+## Weather        5.670  3    0.12884    
+## Wind15         1.898  1    0.16833    
+## Temperature    1.723  2    0.42254    
+## Grass          4.314  1    0.03781 *  
+## Pressure       1.088  1    0.29682    
+## Ice            3.698  1    0.05448 .  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+From above \texttt{LRT} test results, we can see that \texttt{Distance},
+\texttt{Grass} and \texttt{Ice} are significant explanatory variables
+that could explain the logisitc model.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{2.d:} Estimated Odds Ratio for a change of c units in x is: \[
+  \widehat {OR} = \frac{Odds_{x+c}}{Odds_x} = exp(c\hat \beta_1)
+  \]
+  \((1-\alpha) 100 \% \space Wald \space C.I \space for \space estimated \space OR :\)
+  \[
+   exp(c\beta_1 \pm c Z_{1-\frac{\alpha}{2}} \sqrt{\widehat{Var}(\hat \beta_1)})
+  \]
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Estmated Odds Ratio for 1 unit distance change}
+\NormalTok{OR_distance <-}\StringTok{ }\KeywordTok{exp}\NormalTok{(mod.fit}\OperatorTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{]) }
+\NormalTok{OR_distance}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  Distance 
+## 0.8961929
+\end{verbatim}
+
+Let us evaluate the Wald Confidence Interval for OR.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{b.ci <-}\StringTok{ }\KeywordTok{confint.default}\NormalTok{(mod.fit, }\StringTok{"Distance"}\NormalTok{, }\FloatTok{0.95}\NormalTok{)}
+\KeywordTok{cat}\NormalTok{(}\StringTok{'95% C.I. for OR:}\CharTok{\textbackslash{}n}\StringTok{'}\NormalTok{, b.ci)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 95% C.I. for OR:
+##  -0.1236869 -0.09551228
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cat}\NormalTok{(}\StringTok{'For c = -15 yards, 95% C.I. for OR:}\CharTok{\textbackslash{}n}\StringTok{'}\NormalTok{, }\KeywordTok{rev}\NormalTok{(}\KeywordTok{exp}\NormalTok{(}\OperatorTok{-}\DecValTok{15} \OperatorTok{*}\StringTok{ }\NormalTok{b.ci)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## For c = -15 yards, 95% C.I. for OR:
+##  4.189931 6.393642
+\end{verbatim}
+
+We see from above results, every decreae in 15 yards in distance will
+result in an increase in the odds of success by 4 to 6 times.
+
+\newpage
+
+\textbf{Question 3.1:} Examine the data and conduct EDA
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Load the admissions data}
+\NormalTok{admissions <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"admissions.csv"}\NormalTok{, }\DataTypeTok{header =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{sep =} \StringTok{","}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(admissions)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   X admit gre  gpa rank
+## 1 1     0 380 3.61    3
+## 2 2     1 660 3.67    3
+## 3 3     1 800 4.00    1
+## 4 4     1 640 3.19    4
+## 5 5     0 520 2.93    4
+## 6 6     1 760 3.00    2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Check the summary of admissions dataframe}
+\KeywordTok{summary}\NormalTok{(admissions)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        X             admit             gre             gpa       
+##  Min.   :  1.0   Min.   :0.0000   Min.   :220.0   Min.   :2.260  
+##  1st Qu.:100.8   1st Qu.:0.0000   1st Qu.:520.0   1st Qu.:3.130  
+##  Median :200.5   Median :0.0000   Median :580.0   Median :3.395  
+##  Mean   :200.5   Mean   :0.3175   Mean   :587.7   Mean   :3.390  
+##  3rd Qu.:300.2   3rd Qu.:1.0000   3rd Qu.:660.0   3rd Qu.:3.670  
+##  Max.   :400.0   Max.   :1.0000   Max.   :800.0   Max.   :4.000  
+##       rank      
+##  Min.   :1.000  
+##  1st Qu.:2.000  
+##  Median :2.000  
+##  Mean   :2.485  
+##  3rd Qu.:3.000  
+##  Max.   :4.000
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Check the structure of admissions dataframe}
+\KeywordTok{str}\NormalTok{(admissions)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    400 obs. of  5 variables:
+##  $ X    : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ admit: int  0 1 1 1 0 1 1 0 1 0 ...
+##  $ gre  : int  380 660 800 640 520 760 560 400 540 700 ...
+##  $ gpa  : num  3.61 3.67 4 3.19 2.93 3 2.98 3.08 3.39 3.92 ...
+##  $ rank : int  3 3 1 4 4 2 1 2 3 2 ...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Update the rank variable data type to factor from int}
+\NormalTok{admissions}\OperatorTok{$}\NormalTok{rank <-}\StringTok{ }\KeywordTok{factor}\NormalTok{(admissions}\OperatorTok{$}\NormalTok{rank)}
+\KeywordTok{levels}\NormalTok{(admissions}\OperatorTok{$}\NormalTok{rank)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "1" "2" "3" "4"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{xtabs}\NormalTok{(}\OperatorTok{~}\NormalTok{admit }\OperatorTok{+}\StringTok{ }\NormalTok{rank, }\DataTypeTok{data =}\NormalTok{ admissions)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      rank
+## admit  1  2  3  4
+##     0 28 97 93 55
+##     1 33 54 28 12
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cat}\NormalTok{(}\StringTok{'}\CharTok{\textbackslash{}n}\StringTok{ proportional cross table for admit by rank:}\CharTok{\textbackslash{}n\textbackslash{}n}\StringTok{'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  proportional cross table for admit by rank:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{round}\NormalTok{(}\KeywordTok{prop.table}\NormalTok{(}\KeywordTok{xtabs}\NormalTok{(}\OperatorTok{~}\NormalTok{admit }\OperatorTok{+}\StringTok{ }\NormalTok{rank, }\DataTypeTok{data =}\NormalTok{ admissions)), }\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      rank
+## admit    1    2    3    4
+##     0 0.07 0.24 0.23 0.14
+##     1 0.08 0.14 0.07 0.03
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{scatterplotMatrix}\NormalTok{(}\OperatorTok{~}\NormalTok{gre}\OperatorTok{+}\NormalTok{gpa}\OperatorTok{+}\NormalTok{rank}\OperatorTok{|}\NormalTok{admit, }\DataTypeTok{data=}\NormalTok{admissions, }\DataTypeTok{legend =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{regLine =} \OtherTok{TRUE}\NormalTok{,  }\DataTypeTok{main=}\StringTok{"admit by explanatory variables"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ChandraShekarBikkanur_Assignment1_files/figure-latex/unnamed-chunk-20-1.pdf}
+
+\textbf{Question 3.2:} Estimate a binary logistic regression using the
+following set of explanatory variables: \(gre\), \(gpa\), \(rank\),
+\(gre^2\), \(gpa^2\), and \(gre \times gpa\), where \(gre \times gpa\)
+denotes the interaction between \(gre\) and \(gpa\) variables
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{logit.model <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(admit }\OperatorTok{~}\StringTok{ }\NormalTok{gre }\OperatorTok{+}\StringTok{ }\NormalTok{gpa }\OperatorTok{+}\StringTok{ }\NormalTok{rank }\OperatorTok{+}\StringTok{ }\KeywordTok{I}\NormalTok{(gre}\OperatorTok{^}\DecValTok{2}\NormalTok{) }\OperatorTok{+}\StringTok{ }\KeywordTok{I}\NormalTok{(gpa}\OperatorTok{^}\DecValTok{2}\NormalTok{) }\OperatorTok{+}\StringTok{ }\NormalTok{gre}\OperatorTok{:}\NormalTok{gpa, }\DataTypeTok{data =}\NormalTok{ admissions, }\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(}\DataTypeTok{link=}\StringTok{"logit"}\NormalTok{))}
+\KeywordTok{summary}\NormalTok{(logit.model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = admit ~ gre + gpa + rank + I(gre^2) + I(gpa^2) + 
+##     gre:gpa, family = binomial(link = "logit"), data = admissions)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.5502  -0.8754  -0.6297   1.1187   2.1888  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(>|z|)    
+## (Intercept) -7.325e+00  9.065e+00  -0.808 0.419012    
+## gre          1.860e-02  1.184e-02   1.571 0.116136    
+## gpa         -1.777e-01  4.952e+00  -0.036 0.971371    
+## rank2       -7.130e-01  3.202e-01  -2.227 0.025958 *  
+## rank3       -1.341e+00  3.474e-01  -3.861 0.000113 ***
+## rank4       -1.595e+00  4.221e-01  -3.780 0.000157 ***
+## I(gre^2)     3.070e-06  8.216e-06   0.374 0.708624    
+## I(gpa^2)     6.699e-01  7.625e-01   0.878 0.379690    
+## gre:gpa     -5.888e-03  3.196e-03  -1.842 0.065475 .  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 499.98  on 399  degrees of freedom
+## Residual deviance: 454.90  on 391  degrees of freedom
+## AIC: 472.9
+## 
+## Number of Fisher Scoring iterations: 4
+\end{verbatim}
+
+\textbf{Question 3.3:} Test the hypothesis that GRE has no effect on
+admission using the likelihood ratio test
+
+Let us quickly check the above model's explanatory variables'
+significance using \texttt{LRT}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{Anova}\NormalTok{(logit.model, }\DataTypeTok{test=}\StringTok{"LR"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Deviance Table (Type II tests)
+## 
+## Response: admit
+##          LR Chisq Df Pr(>Chisq)    
+## gre        0.3687  1    0.54373    
+## gpa        0.0238  1    0.87749    
+## rank      21.8244  3  7.095e-05 ***
+## I(gre^2)   0.1383  1    0.70994    
+## I(gpa^2)   0.7620  1    0.38269    
+## gre:gpa    3.4119  1    0.06473 .  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+From above \texttt{LRT} results, \texttt{gre} seems to not significant.
+However, rank and gre-gpa interaction look significant Let us build
+another model (H0) to test the null hypothesis that \texttt{gre} has no
+effect on admission.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{logit.model2 <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(admit }\OperatorTok{~}\StringTok{   }\NormalTok{gpa }\OperatorTok{+}\StringTok{ }\NormalTok{rank }\OperatorTok{+}\StringTok{ }\KeywordTok{I}\NormalTok{(gre}\OperatorTok{^}\DecValTok{2}\NormalTok{) }\OperatorTok{+}\StringTok{ }\KeywordTok{I}\NormalTok{(gpa}\OperatorTok{^}\DecValTok{2}\NormalTok{) }\OperatorTok{+}\StringTok{ }\NormalTok{gre}\OperatorTok{:}\NormalTok{gpa, }\DataTypeTok{data =}\NormalTok{ admissions, }\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(}\DataTypeTok{link=}\StringTok{"logit"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+Now, let us compare these two models aginst \texttt{LRT} test.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{anova}\NormalTok{(logit.model2, logit.model, }\StringTok{"LRT"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Deviance Table
+## 
+## Model 1: admit ~ gpa + rank + I(gre^2) + I(gpa^2) + gre:gpa
+## Model 2: admit ~ gre + gpa + rank + I(gre^2) + I(gpa^2) + gre:gpa
+##   Resid. Df Resid. Dev Df Deviance
+## 1       392     457.54            
+## 2       391     454.90  1   2.6419
+\end{verbatim}
+
+From above results, we can say that \texttt{gre} has no significance in
+admission. However, gre-gpa interaction has some effect on admission.
+
+\textbf{Question 3.4:} What is the estimated effect of college GPA on
+admission?
+
+\textbf{Question 3.5:} Construct the confidence interval for the
+admission probability for the students with \(GPA = 3.3\),
+\(GRE = 720\), and \(rank=1\)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{K <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{ (}\DataTypeTok{data=} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{720}\NormalTok{, }\FloatTok{3.3}\NormalTok{, }\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{, }\DecValTok{720}\OperatorTok{*}\DecValTok{720}\NormalTok{, }\FloatTok{3.3}\OperatorTok{*}\FloatTok{3.3}\NormalTok{, }\DecValTok{720}\OperatorTok{*}\FloatTok{3.3}\NormalTok{), }\DataTypeTok{nrow =}\DecValTok{1}\NormalTok{, }\DataTypeTok{ncol =} \DecValTok{9}\NormalTok{)}
+\NormalTok{linear.model.fit <-}\StringTok{ }\KeywordTok{mcprofile}\NormalTok{(logit.model, }\DataTypeTok{CM =}\NormalTok{ K)}
+\NormalTok{ci.logit.profile <-}\StringTok{ }\KeywordTok{confint}\NormalTok{(linear.model.fit, }\DataTypeTok{level =} \FloatTok{0.95}\NormalTok{)}
+
+\KeywordTok{round}\NormalTok{(}\KeywordTok{exp}\NormalTok{(ci.logit.profile}\OperatorTok{$}\NormalTok{confint)}\OperatorTok{/}\NormalTok{(}\DecValTok{1} \OperatorTok{+}\StringTok{ }\KeywordTok{exp}\NormalTok{(ci.logit.profile}\OperatorTok{$}\NormalTok{confint)), }\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   lower upper
+## 1  0.44  0.74
+\end{verbatim}
+
+From above confidence interval, we can see that the probability of admit
+is 0.44 \textless{} \(\hat\pi\) \textless{} .74
+
+\newpage
+
+\textbf{Question 4.1:} Estimate a binary logistic regression with
+\texttt{lfp}, which is a binary variable recoding the participation of
+the females in the sample, as the dependent variable. The set of
+explanatory variables includes \texttt{age}, \texttt{inc}, \texttt{wc},
+\texttt{hc}, \texttt{lwg}, \texttt{totalKids}, and a quadratic term of
+\texttt{age}, called \texttt{age\_squared}, where \texttt{totalKids} is
+the total number of children up to age \(18\) and is equal to the sum of
+\texttt{k5} and \texttt{k618}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{data}\NormalTok{(Mroz) }\CommentTok{# Load th data}
+\NormalTok{Mroz}\OperatorTok{$}\NormalTok{totalKids <-}\StringTok{ }\NormalTok{Mroz}\OperatorTok{$}\NormalTok{k5 }\OperatorTok{+}\StringTok{ }\NormalTok{Mroz}\OperatorTok{$}\NormalTok{k618 }\CommentTok{# Add another column totalKids to Mroz }
+\KeywordTok{str}\NormalTok{(Mroz)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    753 obs. of  9 variables:
+##  $ lfp      : Factor w/ 2 levels "no","yes": 2 2 2 2 2 2 2 2 2 2 ...
+##  $ k5       : int  1 0 1 0 1 0 0 0 0 0 ...
+##  $ k618     : int  0 2 3 3 2 0 2 0 2 2 ...
+##  $ age      : int  32 30 35 34 31 54 37 54 48 39 ...
+##  $ wc       : Factor w/ 2 levels "no","yes": 1 1 1 1 2 1 2 1 1 1 ...
+##  $ hc       : Factor w/ 2 levels "no","yes": 1 1 1 1 1 1 1 1 1 1 ...
+##  $ lwg      : num  1.2102 0.3285 1.5141 0.0921 1.5243 ...
+##  $ inc      : num  10.9 19.5 12 6.8 20.1 ...
+##  $ totalKids: int  1 2 4 3 3 0 2 0 2 2 ...
+\end{verbatim}
+
+Let us create a logisitc model for \texttt{lfp}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mroz.glm <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(lfp }\OperatorTok{~}\StringTok{ }\NormalTok{age }\OperatorTok{+}\StringTok{ }\NormalTok{wc }\OperatorTok{+}\StringTok{ }\NormalTok{hc }\OperatorTok{+}\StringTok{ }\NormalTok{lwg }\OperatorTok{+}\StringTok{ }\NormalTok{inc }\OperatorTok{+}\StringTok{ }\NormalTok{totalKids }\OperatorTok{+}\StringTok{ }\KeywordTok{I}\NormalTok{(age}\OperatorTok{^}\DecValTok{2}\NormalTok{), }\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(}\DataTypeTok{link =}\NormalTok{ logit), }\DataTypeTok{data =}\NormalTok{ Mroz)}
+\KeywordTok{summary}\NormalTok{(mroz.glm) }\CommentTok{# Summary of the logit model}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = lfp ~ age + wc + hc + lwg + inc + totalKids + I(age^2), 
+##     family = binomial(link = logit), data = Mroz)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.8342  -1.1669   0.6773   1.0079   2.0614  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(>|z|)    
+## (Intercept) -5.294073   2.281551  -2.320 0.020320 *  
+## age          0.318014   0.109463   2.905 0.003670 ** 
+## wcyes        0.666013   0.218074   3.054 0.002258 ** 
+## hcyes        0.098260   0.198970   0.494 0.621417    
+## lwg          0.549976   0.145506   3.780 0.000157 ***
+## inc         -0.034561   0.007922  -4.363 1.28e-05 ***
+## totalKids   -0.222490   0.063849  -3.485 0.000493 ***
+## I(age^2)    -0.004114   0.001272  -3.233 0.001224 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 1029.75  on 752  degrees of freedom
+## Residual deviance:  952.02  on 745  degrees of freedom
+## AIC: 968.02
+## 
+## Number of Fisher Scoring iterations: 4
+\end{verbatim}
+
+From above model's summary e can see that all explanatory variables
+except husband education are significant for the model estimation.
+
+\textbf{Question 4.2:} Is the age effect statistically significant?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{Anova}\NormalTok{(mroz.glm, }\DataTypeTok{test=}\StringTok{"LR"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Deviance Table (Type II tests)
+## 
+## Response: lfp
+##           LR Chisq Df Pr(>Chisq)    
+## age         8.6144  1  0.0033351 ** 
+## wc          9.5398  1  0.0020107 ** 
+## hc          0.2439  1  0.6213914    
+## lwg        15.0213  1  0.0001063 ***
+## inc        21.0740  1  4.419e-06 ***
+## totalKids  12.4267  1  0.0004232 ***
+## I(age^2)   10.7487  1  0.0010435 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+Yes. \texttt{age} of the women has statistical significance for the
+model.
+
+\textbf{Question 4.3:} What is the effect of a decrease in age by \(5\)
+years on the odds of labor force participation for a female who was
+\(45\) years of age.
+
+Odds Ratio for \(logit(\pi) = \beta_0 + \beta_1x_1 + \beta_2x_1^2:\)
+
+\[
+exp(c\beta_1+c\beta_2(2x_1+c))
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{c <-}\StringTok{ }\DecValTok{-5}
+\NormalTok{x1 <-}\StringTok{ }\DecValTok{45}
+\NormalTok{beta1 <-}\StringTok{ }\NormalTok{mroz.glm}\OperatorTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{]}
+\NormalTok{beta2 <-}\StringTok{ }\NormalTok{mroz.glm}\OperatorTok{$}\NormalTok{coefficients[}\DecValTok{8}\NormalTok{]}
+\NormalTok{OR <-}\StringTok{ }\KeywordTok{exp}\NormalTok{(c}\OperatorTok{*}\NormalTok{beta1 }\OperatorTok{+}\StringTok{ }\NormalTok{(c}\OperatorTok{*}\NormalTok{beta2)}\OperatorTok{*}\NormalTok{(}\DecValTok{2}\OperatorTok{*}\NormalTok{x1 }\OperatorTok{+}\StringTok{ }\NormalTok{c))}
+\NormalTok{OR}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      age 
+## 1.171602
+\end{verbatim}
+
+From above result, we can say that the Odds Ratio of \texttt{lfp} is
+1.17 times more likely when the age is 45 and decreases by 5 years.
+
+\textbf{Question 4.4:} Estimate the profile likelihood confidence
+interval of the probability of labor force participation for females who
+were \(40\) years old, had income equal to \(20\), did not attend
+college, had log wage equal to 1, and did not have children.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{alpha =}\StringTok{ }\FloatTok{0.5}
+\NormalTok{predict.data <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{age =} \DecValTok{40}\NormalTok{,}
+                                       \DataTypeTok{inc =} \DecValTok{20}\NormalTok{,}
+                           \DataTypeTok{wc =} \KeywordTok{factor}\NormalTok{(}\StringTok{"no"}\NormalTok{), }
+                           \DataTypeTok{hc =} \KeywordTok{factor}\NormalTok{(}\StringTok{"no"}\NormalTok{),}
+                           \DataTypeTok{lwg =} \DecValTok{1}\NormalTok{,}
+                                       \DataTypeTok{totalKids =} \DecValTok{0}\NormalTok{)}
+
+\NormalTok{linear.pred <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(}\DataTypeTok{object =}\NormalTok{ mroz.glm, }\DataTypeTok{newdata =}\NormalTok{ predict.data,}
+                      \DataTypeTok{type =} \StringTok{"link"}\NormalTok{, }\DataTypeTok{se =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{pi.hat <-}\StringTok{ }\KeywordTok{exp}\NormalTok{(linear.pred}\OperatorTok{$}\NormalTok{fit)}\OperatorTok{/}\NormalTok{(}\DecValTok{1}\OperatorTok{+}\KeywordTok{exp}\NormalTok{(linear.pred}\OperatorTok{$}\NormalTok{fit))}
+\NormalTok{CI.lin.pred <-}\StringTok{ }\NormalTok{linear.pred}\OperatorTok{$}\NormalTok{fit }\OperatorTok{+}\StringTok{ }\KeywordTok{qnorm}\NormalTok{(}\DataTypeTok{p =} \KeywordTok{c}\NormalTok{(alpha}\OperatorTok{/}\DecValTok{2}\NormalTok{,}\DecValTok{1}\OperatorTok{-}\NormalTok{alpha}\OperatorTok{/}\DecValTok{2}\NormalTok{))}\OperatorTok{*}\NormalTok{linear.pred}\OperatorTok{$}\NormalTok{se}
+\NormalTok{CI.pi =}\StringTok{ }\KeywordTok{exp}\NormalTok{(CI.lin.pred)}\OperatorTok{/}\NormalTok{(}\DecValTok{1}\OperatorTok{+}\KeywordTok{exp}\NormalTok{(CI.lin.pred))}
+
+
+\KeywordTok{round}\NormalTok{(}\KeywordTok{data.frame}\NormalTok{(pi.hat, }\DataTypeTok{lower=}\NormalTok{CI.pi[}\DecValTok{1}\NormalTok{], }\DataTypeTok{upper=}\NormalTok{CI.pi[}\DecValTok{2}\NormalTok{]),}\DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   pi.hat  lower  upper
+## 1 0.6688 0.6412 0.6953
+\end{verbatim}
+
+\newpage
+
+\hypertarget{maximum-likelihood-2-points}{%
+\section{5: Maximum Likelihood (2
+points)}\label{maximum-likelihood-2-points}}
+
+\textbf{Question 18 a and b of Chapter 3 (page 192,193)}
+
+For the wheat kernel data (\emph{wheat.csv}), consider a model to
+estimate the kernel condition using the density explanatory variable as
+a linear term.
+
+\textbf{Question 5.1} Write an R function that computes the
+log-likelihood function for the multinomial regression model. Evaluate
+the function at the parameter estimates produced by multinom(), and
+verify that your computed value is the same as that produced by logLik()
+(use the object saved from multinom() within this function).
+
+\textbf{Question 5.2} Maximize the log-likelihood function using optim()
+to obtain the MLEs and the estimated covariance matrix. Compare your
+answers to what is obtained by multinom(). Note that to obtain starting
+values for optim(), one approach is to estimate separate logistic
+regression models for \(log \left( \frac{\pi_2}{\pi_1} \right)\) and
+\(log \left( \frac{\pi_3}{\pi_1} \right)\). These models are estimated
+only for those observations that have the corresponding responses (e.g.,
+a \(Y = 1\) or \(Y = 2\) for
+\(log \left( \frac{\pi_2}{\pi_1} \right)\)).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{wheat <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"wheat.csv"}\NormalTok{, }\DataTypeTok{header =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{sep =} \StringTok{","}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(wheat)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   class  density hardness    size  weight moisture    type
+## 1   hrw 1.349253 60.32952 2.30274 24.6480 12.01538 Healthy
+## 2   hrw 1.287440 56.08972 2.72573 33.2985 12.17396 Healthy
+## 3   hrw 1.233985 43.98743 2.51246 31.7580 11.87949 Healthy
+## 4   hrw 1.336534 53.81704 2.27164 32.7060 12.11407 Healthy
+## 5   hrw 1.259040 44.39327 2.35478 26.0700 12.06487 Healthy
+## 6   hrw 1.300258 48.12066 2.49132 33.2985 12.18577 Healthy
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{str}\NormalTok{(wheat)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    275 obs. of  7 variables:
+##  $ class   : Factor w/ 2 levels "hrw","srw": 1 1 1 1 1 1 1 1 1 1 ...
+##  $ density : num  1.35 1.29 1.23 1.34 1.26 ...
+##  $ hardness: num  60.3 56.1 44 53.8 44.4 ...
+##  $ size    : num  2.3 2.73 2.51 2.27 2.35 ...
+##  $ weight  : num  24.6 33.3 31.8 32.7 26.1 ...
+##  $ moisture: num  12 12.2 11.9 12.1 12.1 ...
+##  $ type    : Factor w/ 3 levels "Healthy","Scab",..: 1 1 1 1 1 1 1 1 1 1 ...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{levels}\NormalTok{(wheat}\OperatorTok{$}\NormalTok{type)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Healthy" "Scab"    "Sprout"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod.fit <-}\StringTok{ }\KeywordTok{multinom}\NormalTok{(}\DataTypeTok{formula =}\NormalTok{ type }\OperatorTok{~}\StringTok{ }\NormalTok{density, }\DataTypeTok{data =}\NormalTok{ wheat)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # weights:  9 (4 variable)
+## initial  value 302.118379 
+## iter  10 value 229.769334
+## iter  20 value 229.712304
+## final  value 229.712290 
+## converged
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(mod.fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Call:
+## multinom(formula = type ~ density, data = wheat)
+## 
+## Coefficients:
+##        (Intercept)   density
+## Scab      29.37827 -24.56215
+## Sprout    19.12165 -15.47633
+## 
+## Std. Errors:
+##        (Intercept)  density
+## Scab      3.676892 3.017842
+## Sprout    3.337092 2.691429
+## 
+## Residual Deviance: 459.4246 
+## AIC: 467.4246
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{Anova}\NormalTok{(mod.fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # weights:  6 (2 variable)
+## initial  value 302.118379 
+## final  value 301.493429 
+## converged
+\end{verbatim}
+
+\begin{verbatim}
+## Analysis of Deviance Table (Type II tests)
+## 
+## Response: type
+##         LR Chisq Df Pr(>Chisq)    
+## density   143.56  2  < 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{logLik}\NormalTok{(mod.fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'log Lik.' -229.7123 (df=4)
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{logL =}\StringTok{ }\ControlFlowTok{function}\NormalTok{(beta, x, Y)\{}
+\NormalTok{  pi1 <-}\StringTok{ }\KeywordTok{exp}\NormalTok{(beta[}\DecValTok{1}\NormalTok{] }\OperatorTok{+}\StringTok{ }\NormalTok{beta[}\DecValTok{2}\NormalTok{]}\OperatorTok{*}\NormalTok{x)}\OperatorTok{/}\NormalTok{(}\DecValTok{1}\OperatorTok{+}\KeywordTok{exp}\NormalTok{(beta[}\DecValTok{1}\NormalTok{]}\OperatorTok{+}\NormalTok{beta[}\DecValTok{2}\NormalTok{]}\OperatorTok{*}\NormalTok{x)}\OperatorTok{+}\KeywordTok{exp}\NormalTok{(beta[}\DecValTok{3}\NormalTok{]}\OperatorTok{+}\NormalTok{beta[}\DecValTok{4}\NormalTok{]}\OperatorTok{*}\NormalTok{x))}
+\NormalTok{  pi2 <-}\StringTok{ }\KeywordTok{exp}\NormalTok{(beta[}\DecValTok{3}\NormalTok{] }\OperatorTok{+}\StringTok{ }\NormalTok{beta[}\DecValTok{4}\NormalTok{]}\OperatorTok{*}\NormalTok{x)}\OperatorTok{/}\NormalTok{(}\DecValTok{1}\OperatorTok{+}\KeywordTok{exp}\NormalTok{(beta[}\DecValTok{1}\NormalTok{]}\OperatorTok{+}\NormalTok{beta[}\DecValTok{2}\NormalTok{]}\OperatorTok{*}\NormalTok{x)}\OperatorTok{+}\KeywordTok{exp}\NormalTok{(beta[}\DecValTok{3}\NormalTok{]}\OperatorTok{+}\NormalTok{beta[}\DecValTok{4}\NormalTok{]}\OperatorTok{*}\NormalTok{x))}
+\NormalTok{  v <-}\StringTok{ }\NormalTok{( }\KeywordTok{log}\NormalTok{(pi1))}\OperatorTok{+}\NormalTok{( }\KeywordTok{log}\NormalTok{(pi2))}
+  \KeywordTok{sum}\NormalTok{(v)}
+\NormalTok{\}}
+\NormalTok{betaComb <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(}\KeywordTok{coefficients}\NormalTok{(mod.fit)[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{], }\KeywordTok{coefficients}\NormalTok{(mod.fit)[}\DecValTok{2}\NormalTok{,}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{])}
+\NormalTok{logLvalue <-}\StringTok{ }\KeywordTok{logL}\NormalTok{(}\DataTypeTok{beta=}\NormalTok{betaComb, }\DataTypeTok{x =}\NormalTok{ wheat}\OperatorTok{$}\NormalTok{density, }\DataTypeTok{Y =} \KeywordTok{as.numeric}\NormalTok{(wheat}\OperatorTok{$}\NormalTok{type))}
+\NormalTok{logLvalue}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -809.632
+\end{verbatim}
+
+
+\end{document}
